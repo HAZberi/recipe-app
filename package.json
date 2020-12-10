@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/HAZberi/recipe-app#readme",
   "devDependencies": {
+    "core-js": "^3.8.1",
     "parcel": "^1.12.4",
+    "regenerator-runtime": "^0.13.7",
     "sass": "^1.30.0"
   }
 }
