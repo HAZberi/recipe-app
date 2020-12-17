@@ -4,17 +4,6 @@ import RecipeView from './views/recipeView.js';
 import 'regenerator-runtime/runtime';
 import 'core-js/stable';
 
-
-//const { async } = require('q');
-
-const timeout = function (s) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error(`Request took too long! Timeout after ${s} second`));
-    }, s * 1000);
-  });
-};
-
 ///////////////////////////////////////
 
 const showRecipe = async function () {

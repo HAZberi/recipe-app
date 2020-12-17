@@ -868,7 +868,88 @@ try {
   Function("r", "regeneratorRuntime = r")(runtime);
 }
 
-},{}],"src/js/model.js":[function(require,module,exports) {
+},{}],"src/js/config.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.API_TIMEOUT = exports.API_URL = void 0;
+var API_URL = "https://forkify-api.herokuapp.com/api/v2/recipes/";
+exports.API_URL = API_URL;
+var API_TIMEOUT = 10;
+exports.API_TIMEOUT = API_TIMEOUT;
+},{}],"src/js/helper.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getJSON = void 0;
+
+var _config = require("./config");
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var timeout = function timeout(s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error("Request took too long! Timeout after ".concat(s, " second")));
+    }, s * 1000);
+  });
+};
+
+var getJSON = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(url) {
+    var res, data;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return Promise.race([fetch(url), timeout(_config.API_TIMEOUT)]);
+
+          case 3:
+            res = _context.sent;
+
+            if (res.ok) {
+              _context.next = 6;
+              break;
+            }
+
+            throw new Error("Error: ".concat(data.message, " (").concat(res.status, ")"));
+
+          case 6:
+            _context.next = 8;
+            return res.json();
+
+          case 8:
+            data = _context.sent;
+            return _context.abrupt("return", data);
+
+          case 12:
+            _context.prev = 12;
+            _context.t0 = _context["catch"](0);
+            throw _context.t0;
+
+          case 15:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[0, 12]]);
+  }));
+
+  return function getJSON(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+exports.getJSON = getJSON;
+},{"./config":"src/js/config.js"}],"src/js/model.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -877,6 +958,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.getRecipe = exports.state = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
+
+var _config = require("./config");
+
+var _helper = require("./helper.js");
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -891,31 +976,17 @@ exports.state = state;
 
 var getRecipe = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id) {
-    var res, data, recipe;
+    var data, recipe;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
             _context.next = 3;
-            return fetch("https://forkify-api.herokuapp.com/api/v2/recipes/".concat(id));
+            return (0, _helper.getJSON)("".concat(_config.API_URL).concat(id));
 
           case 3:
-            res = _context.sent;
-            _context.next = 6;
-            return res.json();
-
-          case 6:
             data = _context.sent;
-
-            if (res.ok) {
-              _context.next = 9;
-              break;
-            }
-
-            throw new Error("Error: ".concat(data.message, " (").concat(res.status, ")"));
-
-          case 9:
             recipe = data.data.recipe;
             state.recipe = {
               id: recipe.id,
@@ -927,20 +998,20 @@ var getRecipe = /*#__PURE__*/function () {
               servings: recipe.servings,
               cookingTime: recipe.cooking_time
             };
-            _context.next = 16;
+            _context.next = 11;
             break;
 
-          case 13:
-            _context.prev = 13;
+          case 8:
+            _context.prev = 8;
             _context.t0 = _context["catch"](0);
-            console.log(_context.t0);
+            throw _context.t0;
 
-          case 16:
+          case 11:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 13]]);
+    }, _callee, null, [[0, 8]]);
   }));
 
   return function getRecipe(_x) {
@@ -949,7 +1020,7 @@ var getRecipe = /*#__PURE__*/function () {
 }();
 
 exports.getRecipe = getRecipe;
-},{"regenerator-runtime":"node_modules/regenerator-runtime/runtime.js"}],"src/img/icons.svg":[function(require,module,exports) {
+},{"regenerator-runtime":"node_modules/regenerator-runtime/runtime.js","./config":"src/js/config.js","./helper.js":"src/js/helper.js"}],"src/img/icons.svg":[function(require,module,exports) {
 module.exports = "/icons.ae3c38d5.svg";
 },{}],"node_modules/fractional/index.js":[function(require,module,exports) {
 /*
@@ -1340,9 +1411,9 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
-
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to get private field on non-instance"); } if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
 function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to set private field on non-instance"); } if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } return value; }
 
@@ -1382,8 +1453,6 @@ var RecipeView = /*#__PURE__*/function () {
     value: function render(data) {
       _classPrivateFieldSet(this, _data, data);
 
-      console.log(_classPrivateFieldGet(this, _data));
-
       var markup = _classPrivateMethodGet(this, _generateMarkup, _generateMarkup2).call(this, _classPrivateFieldGet(this, _data));
 
       _classPrivateMethodGet(this, _clear, _clear2).call(this);
@@ -1410,7 +1479,7 @@ var _clear2 = function _clear2() {
 
 var _generateListOfIngridentsMarkup2 = function _generateListOfIngridentsMarkup2(_ref) {
   var ingredients = _ref.ingredients;
-  return ingredients.map(function (ing) {
+  return ingredients === null || ingredients === void 0 ? void 0 : ingredients.map(function (ing) {
     return "\n            <li class=\"recipe__ingredient\">\n              <svg class=\"recipe__icon\">\n                <use href=\"".concat(_icons.default, "#icon-check\"></use>\n              </svg>\n              <div class=\"recipe__quantity\">").concat(ing.quantity != null ? new _fractional.Fraction(ing.quantity).toString() : '', "</div>\n              <div class=\"recipe__description\">\n                <span class=\"recipe__unit\">").concat(ing.unit || '', "</span>\n                ").concat(ing.description || '', "\n              </div>\n            </li>\n        "); //map function is used to create and return li tags for each ingredient
     //join function helps to join all the li tags as one block of html markup
   }).join('');
@@ -12777,16 +12846,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-//const { async } = require('q');
-var timeout = function timeout(s) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error("Request took too long! Timeout after ".concat(s, " second")));
-    }, s * 1000);
-  });
-}; ///////////////////////////////////////
-
-
+///////////////////////////////////////
 var showRecipe = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var id;
@@ -12860,7 +12920,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57056" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58107" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

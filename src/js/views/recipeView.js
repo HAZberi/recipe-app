@@ -8,7 +8,6 @@ class RecipeView {
   #data;
   render(data) {
     this.#data = data;
-    console.log(this.#data);
     const markup = this.#generateMarkup(this.#data);
     this.#clear();
     this.#recipeContainer.insertAdjacentHTML('afterbegin', markup);
@@ -30,7 +29,7 @@ class RecipeView {
   }
   #generateListOfIngridentsMarkup({ ingredients }) {
     return ingredients
-      .map(ing => {
+      ?.map(ing => {
         return `
             <li class="recipe__ingredient">
               <svg class="recipe__icon">
