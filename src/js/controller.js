@@ -17,20 +17,20 @@ const timeout = function (s) {
     }, s * 1000);
   });
 };
-
-// https://forkify-api.herokuapp.com/v2
-// APIKEY = 9222b988-7d5e-4f74-8033-893570dc4c4d
-
-///////////////////////////////////////
-
-//Lodaing Spinner Helper Function
-const loading = function (el) {
-  const html = `
-        <div class="spinner">
-          <svg>
-            <use href="${icons}#icon-loader"></use>
-          </svg>
-        </div>
+  
+  // https://forkify-api.herokuapp.com/v2
+  // APIKEY = 9222b988-7d5e-4f74-8033-893570dc4c4d
+  
+  ///////////////////////////////////////
+  
+  //Lodaing Spinner Helper Function
+  const loading = function (el) {
+    const html = `
+    <div class="spinner">
+    <svg>
+    <use href="${icons}#icon-loader"></use>
+    </svg>
+    </div>
   `;
   el.innerHTML = '';
   el.insertAdjacentHTML('afterbegin', html);
@@ -42,7 +42,7 @@ const getRecipe = async function () {
     const id = window.location.hash.slice(1);
 
     //STEP 1 Fetching the recipe
-    //Adding a spinner while we what for the API to fetch
+    //Adding a spinner while we wait for the API to fetch
     loading(recipeContainer);
 
     const res = await fetch(

@@ -12234,7 +12234,7 @@ var timeout = function timeout(s) {
 
 
 var loading = function loading(el) {
-  var html = "\n        <div class=\"spinner\">\n          <svg>\n            <use href=\"".concat(_icons.default, "#icon-loader\"></use>\n          </svg>\n        </div>\n  ");
+  var html = "\n    <div class=\"spinner\">\n    <svg>\n    <use href=\"".concat(_icons.default, "#icon-loader\"></use>\n    </svg>\n    </div>\n  ");
   el.innerHTML = '';
   el.insertAdjacentHTML('afterbegin', html);
 };
@@ -12249,7 +12249,7 @@ var getRecipe = /*#__PURE__*/function () {
             _context.prev = 0;
             //geting href from the url
             id = window.location.hash.slice(1); //STEP 1 Fetching the recipe
-            //Adding a spinner while we what for the API to fetch
+            //Adding a spinner while we wait for the API to fetch
 
             loading(recipeContainer);
             _context.next = 5;
@@ -12342,7 +12342,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56587" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54025" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
