@@ -22,5 +22,8 @@
     "parcel": "^1.12.4",
     "regenerator-runtime": "^0.13.7",
     "sass": "^1.30.0"
+  },
+  "dependencies": {
+    "fractional": "^1.0.0"
   }
 }
