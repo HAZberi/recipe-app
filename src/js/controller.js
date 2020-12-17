@@ -10,6 +10,7 @@ const showRecipe = async function () {
   try {
     //geting href from the url
     const id = window.location.hash.slice(1);
+    if(!id) return;
     //Adding a spinner while we wait for the API to fetch
     RecipeView.loadingSpinner();
     //STEP 1 Fetching the recipe
@@ -21,6 +22,11 @@ const showRecipe = async function () {
   }
 };
 
-['hashchange', 'load'].forEach(eventType =>
-  window.addEventListener(eventType, showRecipe)
-);
+const init = function(){
+  RecipeView.handleEventListeners(showRecipe);
+}
+
+init();
+
+
+

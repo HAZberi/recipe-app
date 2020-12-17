@@ -27,6 +27,11 @@ class RecipeView {
     this.#recipeContainer.innerHTML = '';
     this.#recipeContainer.insertAdjacentHTML('afterbegin', html);
   }
+  handleEventListeners(showRecipe){
+    ['hashchange', 'load'].forEach(eventType =>
+        window.addEventListener(eventType, showRecipe)
+      );
+  }
   #generateListOfIngridentsMarkup({ ingredients }) {
     return ingredients
       ?.map(ing => {

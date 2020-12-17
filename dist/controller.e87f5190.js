@@ -1468,6 +1468,13 @@ var RecipeView = /*#__PURE__*/function () {
 
       _classPrivateFieldGet(this, _recipeContainer).insertAdjacentHTML('afterbegin', html);
     }
+  }, {
+    key: "handleEventListeners",
+    value: function handleEventListeners(showRecipe) {
+      ['hashchange', 'load'].forEach(function (eventType) {
+        return window.addEventListener(eventType, showRecipe);
+      });
+    }
   }]);
 
   return RecipeView;
@@ -12856,32 +12863,41 @@ var showRecipe = /*#__PURE__*/function () {
           case 0:
             _context.prev = 0;
             //geting href from the url
-            id = window.location.hash.slice(1); //Adding a spinner while we wait for the API to fetch
+            id = window.location.hash.slice(1);
 
+            if (id) {
+              _context.next = 4;
+              break;
+            }
+
+            return _context.abrupt("return");
+
+          case 4:
+            //Adding a spinner while we wait for the API to fetch
             _recipeView.default.loadingSpinner(); //STEP 1 Fetching the recipe
 
 
-            _context.next = 5;
+            _context.next = 7;
             return model.getRecipe(id);
 
-          case 5:
+          case 7:
             //Step2 Rendering the recipe
             _recipeView.default.render(model.state);
 
-            _context.next = 11;
+            _context.next = 13;
             break;
 
-          case 8:
-            _context.prev = 8;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context["catch"](0);
             console.error(_context.t0);
 
-          case 11:
+          case 13:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 8]]);
+    }, _callee, null, [[0, 10]]);
   }));
 
   return function showRecipe() {
@@ -12889,9 +12905,11 @@ var showRecipe = /*#__PURE__*/function () {
   };
 }();
 
-['hashchange', 'load'].forEach(function (eventType) {
-  return window.addEventListener(eventType, showRecipe);
-});
+var init = function init() {
+  _recipeView.default.handleEventListeners(showRecipe);
+};
+
+init();
 },{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","core-js/stable":"node_modules/core-js/stable/index.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
