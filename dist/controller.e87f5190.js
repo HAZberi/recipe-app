@@ -914,20 +914,20 @@ var getJSON = /*#__PURE__*/function () {
 
           case 3:
             res = _context.sent;
+            _context.next = 6;
+            return res.json();
+
+          case 6:
+            data = _context.sent;
 
             if (res.ok) {
-              _context.next = 6;
+              _context.next = 9;
               break;
             }
 
             throw new Error("Error: ".concat(data.message, " (").concat(res.status, ")"));
 
-          case 6:
-            _context.next = 8;
-            return res.json();
-
-          case 8:
-            data = _context.sent;
+          case 9:
             return _context.abrupt("return", data);
 
           case 12:
@@ -1421,7 +1421,11 @@ var _recipeContainer = new WeakMap();
 
 var _data = new WeakMap();
 
-var _clear = new WeakSet();
+var _errorMessage = new WeakMap();
+
+var _message = new WeakMap();
+
+var _clearAndInsert = new WeakSet();
 
 var _generateListOfIngridentsMarkup = new WeakSet();
 
@@ -1435,7 +1439,7 @@ var RecipeView = /*#__PURE__*/function () {
 
     _generateListOfIngridentsMarkup.add(this);
 
-    _clear.add(this);
+    _clearAndInsert.add(this);
 
     _recipeContainer.set(this, {
       writable: true,
@@ -1446,6 +1450,16 @@ var RecipeView = /*#__PURE__*/function () {
       writable: true,
       value: void 0
     });
+
+    _errorMessage.set(this, {
+      writable: true,
+      value: "Recipe not found. Please search for something else or try again."
+    });
+
+    _message.set(this, {
+      writable: true,
+      value: "Start by searching for a recipe or an ingredient. Have fun!"
+    });
   }
 
   _createClass(RecipeView, [{
@@ -1455,18 +1469,15 @@ var RecipeView = /*#__PURE__*/function () {
 
       var markup = _classPrivateMethodGet(this, _generateMarkup, _generateMarkup2).call(this, _classPrivateFieldGet(this, _data));
 
-      _classPrivateMethodGet(this, _clear, _clear2).call(this);
-
-      _classPrivateFieldGet(this, _recipeContainer).insertAdjacentHTML('afterbegin', markup);
+      _classPrivateMethodGet(this, _clearAndInsert, _clearAndInsert2).call(this, markup);
     }
   }, {
     key: "loadingSpinner",
     //Lodaing Spinner Helper Function
     value: function loadingSpinner() {
       var html = "\n        <div class=\"spinner\">\n        <svg>\n        <use href=\"".concat(_icons.default, "#icon-loader\"></use>\n        </svg>\n        </div>\n      ");
-      _classPrivateFieldGet(this, _recipeContainer).innerHTML = '';
 
-      _classPrivateFieldGet(this, _recipeContainer).insertAdjacentHTML('afterbegin', html);
+      _classPrivateMethodGet(this, _clearAndInsert, _clearAndInsert2).call(this, html);
     }
   }, {
     key: "handleEventListeners",
@@ -1475,13 +1486,31 @@ var RecipeView = /*#__PURE__*/function () {
         return window.addEventListener(eventType, showRecipe);
       });
     }
+  }, {
+    key: "renderError",
+    value: function renderError() {
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _classPrivateFieldGet(this, _errorMessage);
+      var markup = "\n      <div class=\"error\">\n        <div>\n          <svg>\n            <use href=\"".concat(_icons.default, "#icon-alert-triangle\"></use>\n          </svg>\n        </div>\n        <p>").concat(message, "</p>\n      </div>");
+
+      _classPrivateMethodGet(this, _clearAndInsert, _clearAndInsert2).call(this, markup);
+    }
+  }, {
+    key: "renderMessage",
+    value: function renderMessage() {
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _classPrivateFieldGet(this, _message);
+      var markup = "        \n        <div class=\"message\">\n          <div>\n            <svg>\n              <use href=\"".concat(_icons.default, "#icon-smile\"></use>\n            </svg>\n          </div>\n          <p>").concat(message, "</p>\n        </div>");
+
+      _classPrivateMethodGet(this, _clearAndInsert, _clearAndInsert2).call(this, markup);
+    }
   }]);
 
   return RecipeView;
 }();
 
-var _clear2 = function _clear2() {
+var _clearAndInsert2 = function _clearAndInsert2(markup) {
   _classPrivateFieldGet(this, _recipeContainer).innerHTML = '';
+
+  _classPrivateFieldGet(this, _recipeContainer).insertAdjacentHTML('afterbegin', markup);
 };
 
 var _generateListOfIngridentsMarkup2 = function _generateListOfIngridentsMarkup2(_ref) {
@@ -12884,7 +12913,7 @@ var showRecipe = /*#__PURE__*/function () {
             //Step2 Rendering the recipe
             _recipeView.default.render(model.state);
 
-            _context.next = 13;
+            _context.next = 14;
             break;
 
           case 10:
@@ -12892,7 +12921,9 @@ var showRecipe = /*#__PURE__*/function () {
             _context.t0 = _context["catch"](0);
             console.error(_context.t0);
 
-          case 13:
+            _recipeView.default.renderError();
+
+          case 14:
           case "end":
             return _context.stop();
         }
@@ -12938,7 +12969,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58107" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52763" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
