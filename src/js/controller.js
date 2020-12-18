@@ -2,6 +2,7 @@ import * as model from './model.js';
 import RecipeView from './views/recipeView.js';
 import SearchView from './views/searchView.js';
 import ResultsView from './views/resultsView.js';
+import PaginationView from './views/paginationView.js'
 
 //Polyfilling Imports
 import 'regenerator-runtime/runtime';
@@ -43,6 +44,8 @@ const showSearchResults = async function () {
     await model.getSearchResults(query);
     //render the search results
     ResultsView.render(model.getSearchResultsPerPage(1));
+    //Show pagination if any
+    PaginationView.render(model.state.search);
   } catch (err) {
     console.error(err);
     ResultsView.renderError();
