@@ -5,6 +5,10 @@ import { getJSON } from './helper.js';
 // APIKEY = 9222b988-7d5e-4f74-8033-893570dc4c4d
 export const state = {
   recipe: {},
+  search: {
+    query: '',
+    results: []
+  }
 };
 
 export const getRecipe = async function (id) {
@@ -26,3 +30,22 @@ export const getRecipe = async function (id) {
     throw error;
   }
 };
+
+export const getSearchResults = async function(query){
+  try{
+    state.search.query = query;
+    const data = await getJSON(`${API_URL}?search=${query}`);
+    const { recipes } = data.data;
+    state.search.results = recipes.map(recipe => {
+      return {
+        id: recipe.id,
+        publisher: recipe.publisher,
+        imageUrl: recipe.image_url,
+        title: recipe.title
+      }
+    })
+    console.log(state);
+  }catch(error){
+    throw error;
+  }
+}
