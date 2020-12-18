@@ -1,10 +1,18 @@
 import * as model from './model.js';
 import RecipeView from './views/recipeView.js';
 import SearchView from "./views/searchView.js";
+import ResultsView from "./views/resultsView.js";
 
 //Polyfilling Imports
 import 'regenerator-runtime/runtime';
 import 'core-js/stable';
+
+//Hot Module Reload
+if(module.hot){
+  module.hot.accept();
+}
+
+
 
 ///////////////////////////////////////
 
@@ -31,10 +39,12 @@ const showSearchResults = async function (){
     const query = SearchView.getQuery();
     //If there is no value - Abort
     if(!query) return;
+    //Adding a spinner while we wait for the results
+    ResultsView.loadingSpinner();
     //wait to get the search results and update state
     await model.getSearchResults(query);
     //render the search results
-    console.log(model.state);
+    ResultsView.render(model.state.search);
   }catch(err){
     console.error(err);
   }

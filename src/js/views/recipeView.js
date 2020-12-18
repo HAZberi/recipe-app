@@ -2,63 +2,18 @@
 //import icons from "url:../img/icons.svg"; Parcel 2
 import icons from '../../img/icons.svg'; // Parcel 1 still works
 import { Fraction } from 'fractional';
+import View from "./View.js";
 
-class RecipeView {
-  #recipeContainer = document.querySelector('.recipe');
-  #data;
-  #errorMessage = "Recipe not found. Please search for something else or try again."
-  #message = "Start by searching for a recipe or an ingredient. Have fun!";
-  render(data) {
-    this.#data = data;
-    const markup = this.#generateMarkup(this.#data);
-    this.#clearAndInsert(markup);
-  }
-  #clearAndInsert(markup) {
-    this.#recipeContainer.innerHTML = '';
-    this.#recipeContainer.insertAdjacentHTML('afterbegin', markup);
-  }
-  //Lodaing Spinner Helper Function
-  loadingSpinner() {
-    const html = `
-        <div class="spinner">
-        <svg>
-        <use href="${icons}#icon-loader"></use>
-        </svg>
-        </div>
-      `;
-    this.#clearAndInsert(html);
-  }
+class RecipeView extends View{
+  _parentElement = document.querySelector('.recipe');
+  _errorMessage = "Recipe not found. Please search for something else or try again."
+  _message = "Start by searching for a recipe or an ingredient. Have fun!";
   handleEventListeners(showRecipe){
     ['hashchange', 'load'].forEach(eventType =>
         window.addEventListener(eventType, showRecipe)
       );
   }
-  renderError(message = this.#errorMessage){
-    const markup = `
-      <div class="error">
-        <div>
-          <svg>
-            <use href="${icons}#icon-alert-triangle"></use>
-          </svg>
-        </div>
-        <p>${message}</p>
-      </div>`;
-    this.#clearAndInsert(markup);
-  }
-  renderMessage(message = this.#message){
-    const markup = `        
-        <div class="message">
-          <div>
-            <svg>
-              <use href="${icons}#icon-smile"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-        </div>`;
-    this.#clearAndInsert(markup);
-  }
-
-  #generateListOfIngridentsMarkup({ ingredients }) {
+  _generateListOfIngridentsMarkup({ ingredients }) {
     return ingredients
       ?.map(ing => {
         return `
@@ -82,7 +37,7 @@ class RecipeView {
       })
       .join('');
   }
-  #generateMarkup({ recipe }) {
+  _generateMarkup({ recipe }) {
     return ` 
         <figure class="recipe__fig">
           <img src=${recipe.imageUrl} alt="Tomato" class="recipe__img" />
@@ -139,7 +94,7 @@ class RecipeView {
         <div class="recipe__ingredients">
           <h2 class="heading--2">Recipe ingredients</h2>
           <ul class="recipe__ingredient-list">
-          ${this.#generateListOfIngridentsMarkup(recipe)}
+          ${this._generateListOfIngridentsMarkup(recipe)}
           </ul>
         </div>
 
