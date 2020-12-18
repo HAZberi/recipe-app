@@ -44,7 +44,6 @@ export const getSearchResults = async function(query){
         title: recipe.title
       }
     })
-    console.log(state);
   }catch(error){
     throw error;
   }

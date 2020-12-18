@@ -27,16 +27,22 @@ const showRecipe = async function () {
 
 const showSearchResults = async function (){
   try{
-    await model.getSearchResults('pizza');
+    //Getting the query string from View
+    const query = SearchView.getQuery();
+    //If there is no value - Abort
+    if(!query) return;
+    //wait to get the search results and update state
+    await model.getSearchResults(query);
+    //render the search results
+    console.log(model.state);
   }catch(err){
     console.error(err);
   }
 }
 
-showSearchResults();
-
 const init = function(){
   RecipeView.handleEventListeners(showRecipe);
+  SearchView.handleEventListener(showSearchResults);
 }
 
 init();

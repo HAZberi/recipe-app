@@ -1048,21 +1048,20 @@ var getSearchResults = /*#__PURE__*/function () {
                 title: recipe.title
               };
             });
-            console.log(state);
-            _context2.next = 13;
+            _context2.next = 12;
             break;
 
-          case 10:
-            _context2.prev = 10;
+          case 9:
+            _context2.prev = 9;
             _context2.t0 = _context2["catch"](0);
             throw _context2.t0;
 
-          case 13:
+          case 12:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 10]]);
+    }, _callee2, null, [[0, 9]]);
   }));
 
   return function getSearchResults(_x2) {
@@ -1581,19 +1580,32 @@ var _default = new RecipeView();
 
 exports.default = _default;
 },{"../../img/icons.svg":"src/img/icons.svg","fractional":"node_modules/fractional/index.js"}],"src/js/views/searchView.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = privateMap.get(receiver); if (!descriptor) { throw new TypeError("attempted to get private field on non-instance"); } if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 
 var _searchContainer = new WeakMap();
 
+var _clearInput = new WeakSet();
+
 var SearchView = /*#__PURE__*/function () {
   function SearchView() {
     _classCallCheck(this, SearchView);
+
+    _clearInput.add(this);
 
     _searchContainer.set(this, {
       writable: true,
@@ -1604,12 +1616,32 @@ var SearchView = /*#__PURE__*/function () {
   _createClass(SearchView, [{
     key: "getQuery",
     value: function getQuery() {
-      return _classPrivateFieldGet(this, _searchContainer).querySelector(".search__field").value;
+      var query = _classPrivateFieldGet(this, _searchContainer).querySelector('.search__field').value;
+
+      _classPrivateMethodGet(this, _clearInput, _clearInput2).call(this);
+
+      return query;
+    }
+  }, {
+    key: "handleEventListener",
+    value: function handleEventListener(showSearchResults) {
+      _classPrivateFieldGet(this, _searchContainer).addEventListener('submit', function (e) {
+        e.preventDefault();
+        showSearchResults();
+      });
     }
   }]);
 
   return SearchView;
 }();
+
+var _clearInput2 = function _clearInput2() {
+  _classPrivateFieldGet(this, _searchContainer).querySelector('.search__field').value = '';
+};
+
+var _default = new SearchView();
+
+exports.default = _default;
 },{}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
 var global = arguments[3];
 var check = function (it) {
@@ -13021,29 +13053,43 @@ var showRecipe = /*#__PURE__*/function () {
 
 var showSearchResults = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+    var query;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _context2.next = 3;
-            return model.getSearchResults('pizza');
+            //Getting the query string from View
+            query = _searchView.default.getQuery(); //If there is no value - Abort
 
-          case 3:
-            _context2.next = 8;
+            if (query) {
+              _context2.next = 4;
+              break;
+            }
+
+            return _context2.abrupt("return");
+
+          case 4:
+            _context2.next = 6;
+            return model.getSearchResults(query);
+
+          case 6:
+            //render the search results
+            console.log(model.state);
+            _context2.next = 12;
             break;
 
-          case 5:
-            _context2.prev = 5;
+          case 9:
+            _context2.prev = 9;
             _context2.t0 = _context2["catch"](0);
             console.error(_context2.t0);
 
-          case 8:
+          case 12:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 5]]);
+    }, _callee2, null, [[0, 9]]);
   }));
 
   return function showSearchResults() {
@@ -13051,10 +13097,10 @@ var showSearchResults = /*#__PURE__*/function () {
   };
 }();
 
-showSearchResults();
-
 var init = function init() {
   _recipeView.default.handleEventListeners(showRecipe);
+
+  _searchView.default.handleEventListener(showSearchResults);
 };
 
 init();
