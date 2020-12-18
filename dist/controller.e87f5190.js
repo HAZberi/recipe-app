@@ -1075,8 +1075,10 @@ var getSearchResults = /*#__PURE__*/function () {
 
 exports.getSearchResults = getSearchResults;
 
-var getSearchResultsPerPage = function getSearchResultsPerPage(page) {
+var getSearchResultsPerPage = function getSearchResultsPerPage() {
+  var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.search.currentPage;
   state.search.currentPage = page;
+  console.log("Current Page:", state.search.currentPage);
   var start = (page - 1) * state.search.resultsPerPage;
   var end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
@@ -1776,6 +1778,8 @@ exports.default = void 0;
 
 var _View2 = _interopRequireDefault(require("./View.js"));
 
+var _icons = _interopRequireDefault(require("../../img/icons.svg"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1824,30 +1828,39 @@ var PaginationView = /*#__PURE__*/function (_View) {
   }
 
   _createClass(PaginationView, [{
+    key: "handleEventListener",
+    value: function handleEventListener(movePagination) {
+      this._parentElement.addEventListener('click', function (e) {
+        var paginationButton = e.target.closest('.btn--inline');
+        if (!paginationButton) return; //type coercion required
+
+        var pageToGo = +paginationButton.dataset.target;
+        movePagination(pageToGo);
+      });
+    }
+  }, {
     key: "_generateMarkup",
     value: function _generateMarkup(_ref) {
       var currentPage = _ref.currentPage,
           results = _ref.results,
           resultsPerPage = _ref.resultsPerPage;
       var totalPages = Math.ceil(results.length / resultsPerPage);
-      console.log(totalPages); //if there are more than one page
+      console.log('Total Pages:', totalPages); //if there are more than one page
 
-      if (currentPage === 1 && totalPages > 1) {
-        return "1st page and others";
-      } //if current page is the last page
+      if (currentPage === 1 && totalPages > 1) //type coercion required
+        return this._generateButtonMarkup(currentPage * 1 + 1, 'next'); //if current page is the last page
 
+      if (currentPage === totalPages && totalPages > 1) return this._generateButtonMarkup(currentPage - 1, 'prev'); //if current page is a middle page
 
-      if (currentPage === totalPages) {
-        return "last page";
-      } //if current page is a middle page
+      if (currentPage > 1 && currentPage < totalPages) return [this._generateButtonMarkup(currentPage - 1, 'prev'), //type coercion required
+      this._generateButtonMarkup(currentPage * 1 + 1, 'next')].join(''); //if there is only one page
 
-
-      if (currentPage > 1 && currentPage < totalPages) {
-        return "its a middle page";
-      } //if there is only one page
-
-
-      return "";
+      return '';
+    }
+  }, {
+    key: "_generateButtonMarkup",
+    value: function _generateButtonMarkup(pageNumber, direction) {
+      return "\n    <button data-target=".concat(pageNumber, " class=\"btn--inline pagination__btn--").concat(direction, "\">\n        ").concat(direction === 'prev' ? "\n        <svg class=\"search__icon\">\n        <use href=\"".concat(_icons.default, "#icon-arrow-left\"></use>\n        </svg>\n        <span>Page ").concat(pageNumber, "</span>") : "\n        <span>Page ".concat(pageNumber, "</span>\n        <svg class=\"search__icon\">\n        <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n        </svg>"), "\n    </button>\n    ");
     }
   }]);
 
@@ -1857,7 +1870,7 @@ var PaginationView = /*#__PURE__*/function (_View) {
 var _default = new PaginationView();
 
 exports.default = _default;
-},{"./View.js":"src/js/views/View.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
+},{"./View.js":"src/js/views/View.js","../../img/icons.svg":"src/img/icons.svg"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
 var global = arguments[3];
 var check = function (it) {
   return it && it.Math == Math && it;
@@ -13302,7 +13315,7 @@ var showSearchResults = /*#__PURE__*/function () {
 
           case 7:
             //render the search results
-            _resultsView.default.render(model.getSearchResultsPerPage(1)); //Show pagination if any
+            _resultsView.default.render(model.getSearchResultsPerPage()); //Show pagination if any
 
 
             _paginationView.default.render(model.state.search);
@@ -13330,10 +13343,18 @@ var showSearchResults = /*#__PURE__*/function () {
   };
 }();
 
+var movePagination = function movePagination(gotoPage) {
+  _resultsView.default.render(model.getSearchResultsPerPage(gotoPage));
+
+  _paginationView.default.render(model.state.search);
+};
+
 var init = function init() {
   _recipeView.default.handleEventListeners(showRecipe);
 
   _searchView.default.handleEventListener(showSearchResults);
+
+  _paginationView.default.handleEventListener(movePagination);
 };
 
 init();

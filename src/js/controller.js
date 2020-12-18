@@ -43,7 +43,7 @@ const showSearchResults = async function () {
     //wait to get the search results and update state
     await model.getSearchResults(query);
     //render the search results
-    ResultsView.render(model.getSearchResultsPerPage(1));
+    ResultsView.render(model.getSearchResultsPerPage());
     //Show pagination if any
     PaginationView.render(model.state.search);
   } catch (err) {
@@ -52,9 +52,15 @@ const showSearchResults = async function () {
   }
 };
 
+const movePagination = function(gotoPage){
+  ResultsView.render(model.getSearchResultsPerPage(gotoPage));
+  PaginationView.render(model.state.search);
+}
+
 const init = function () {
   RecipeView.handleEventListeners(showRecipe);
   SearchView.handleEventListener(showSearchResults);
+  PaginationView.handleEventListener(movePagination);
 };
 
 init();
