@@ -47,6 +47,7 @@ const showSearchResults = async function (){
     ResultsView.render(model.state.search);
   }catch(err){
     console.error(err);
+    ResultsView.renderError();
   }
 }
 

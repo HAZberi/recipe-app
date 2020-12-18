@@ -1471,6 +1471,7 @@ var View = /*#__PURE__*/function () {
   _createClass(View, [{
     key: "render",
     value: function render(data) {
+      if (!data || Array.isArray(data.results) && data.results.length === 0) throw new Error('No Results Available');
       this._data = data;
 
       var markup = this._generateMarkup(this._data);
@@ -1682,8 +1683,6 @@ exports.default = void 0;
 
 var _View2 = _interopRequireDefault(require("./View.js"));
 
-var _icons = _interopRequireDefault(require("../../img/icons.svg"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1755,7 +1754,7 @@ var ResultsView = /*#__PURE__*/function (_View) {
 var _default = new ResultsView();
 
 exports.default = _default;
-},{"./View.js":"src/js/views/View.js","../../img/icons.svg":"src/img/icons.svg"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
+},{"./View.js":"src/js/views/View.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
 var global = arguments[3];
 var check = function (it) {
   return it && it.Math == Math && it;
@@ -13201,7 +13200,7 @@ var showSearchResults = /*#__PURE__*/function () {
             //render the search results
             _resultsView.default.render(model.state.search);
 
-            _context2.next = 13;
+            _context2.next = 14;
             break;
 
           case 10:
@@ -13209,7 +13208,9 @@ var showSearchResults = /*#__PURE__*/function () {
             _context2.t0 = _context2["catch"](0);
             console.error(_context2.t0);
 
-          case 13:
+            _resultsView.default.renderError();
+
+          case 14:
           case "end":
             return _context2.stop();
         }
