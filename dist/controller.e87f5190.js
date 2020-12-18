@@ -874,11 +874,13 @@ try {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.API_TIMEOUT = exports.API_URL = void 0;
+exports.RESULTS_PER_PAGE = exports.API_TIMEOUT = exports.API_URL = void 0;
 var API_URL = "https://forkify-api.herokuapp.com/api/v2/recipes/";
 exports.API_URL = API_URL;
 var API_TIMEOUT = 10;
 exports.API_TIMEOUT = API_TIMEOUT;
+var RESULTS_PER_PAGE = 10;
+exports.RESULTS_PER_PAGE = RESULTS_PER_PAGE;
 },{}],"src/js/helper.js":[function(require,module,exports) {
 "use strict";
 
@@ -955,7 +957,7 @@ exports.getJSON = getJSON;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getSearchResults = exports.getRecipe = exports.state = void 0;
+exports.getSearchResultsPerPage = exports.getSearchResults = exports.getRecipe = exports.state = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
 
@@ -973,7 +975,9 @@ var state = {
   recipe: {},
   search: {
     query: '',
-    results: []
+    results: [],
+    resultsPerPage: _config.RESULTS_PER_PAGE,
+    currentPage: 1
   }
 };
 exports.state = state;
@@ -1070,6 +1074,15 @@ var getSearchResults = /*#__PURE__*/function () {
 }();
 
 exports.getSearchResults = getSearchResults;
+
+var getSearchResultsPerPage = function getSearchResultsPerPage(page) {
+  state.search.currentPage = page;
+  var start = (page - 1) * state.search.resultsPerPage;
+  var end = page * state.search.resultsPerPage;
+  return state.search.results.slice(start, end);
+};
+
+exports.getSearchResultsPerPage = getSearchResultsPerPage;
 },{"regenerator-runtime":"node_modules/regenerator-runtime/runtime.js","./config":"src/js/config.js","./helper.js":"src/js/helper.js"}],"src/img/icons.svg":[function(require,module,exports) {
 module.exports = "/icons.ae3c38d5.svg";
 },{}],"node_modules/fractional/index.js":[function(require,module,exports) {
@@ -1736,8 +1749,7 @@ var ResultsView = /*#__PURE__*/function (_View) {
 
   _createClass(ResultsView, [{
     key: "_generateMarkup",
-    value: function _generateMarkup(_ref) {
-      var results = _ref.results;
+    value: function _generateMarkup(results) {
       var markup = results.map(this._generateListItem).join('');
       return markup;
     }
@@ -13112,11 +13124,10 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 //Hot Module Reload
-if (module.hot) {
-  module.hot.accept();
-} ///////////////////////////////////////
-
-
+// if (module.hot) {
+//   module.hot.accept();
+// }
+///////////////////////////////////////
 var showRecipe = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var id;
@@ -13198,7 +13209,7 @@ var showSearchResults = /*#__PURE__*/function () {
 
           case 7:
             //render the search results
-            _resultsView.default.render(model.state.search);
+            _resultsView.default.render(model.getSearchResultsPerPage(1));
 
             _context2.next = 14;
             break;

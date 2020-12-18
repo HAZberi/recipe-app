@@ -5,7 +5,7 @@ class ResultsView extends View {
   _errorMessage =
     'No results found. Please search for something else or try again.';
   _message = 'Start by searching for a recipe or an ingredient. Have fun!';
-  _generateMarkup({ results }) {
+  _generateMarkup(results) {
     const markup = results.map(this._generateListItem).join('');
     return markup;
   }
