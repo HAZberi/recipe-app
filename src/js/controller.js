@@ -2,7 +2,8 @@ import * as model from './model.js';
 import RecipeView from './views/recipeView.js';
 import SearchView from './views/searchView.js';
 import ResultsView from './views/resultsView.js';
-import PaginationView from './views/paginationView.js'
+import PaginationView from './views/paginationView.js';
+import TimeAgo from "./TimeAgo";
 
 //Polyfilling Imports
 import 'regenerator-runtime/runtime';
@@ -52,10 +53,10 @@ const showSearchResults = async function () {
   }
 };
 
-const movePagination = function(gotoPage){
+const movePagination = function (gotoPage) {
   ResultsView.render(model.getSearchResultsPerPage(gotoPage));
   PaginationView.render(model.state.search);
-}
+};
 
 const init = function () {
   RecipeView.handleEventListeners(showRecipe);
@@ -63,4 +64,7 @@ const init = function () {
   PaginationView.handleEventListener(movePagination);
 };
 
+
+
+console.log(TimeAgo('2020-12-13'));
 init();

@@ -1870,7 +1870,59 @@ var PaginationView = /*#__PURE__*/function (_View) {
 var _default = new PaginationView();
 
 exports.default = _default;
-},{"./View.js":"src/js/views/View.js","../../img/icons.svg":"src/img/icons.svg"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
+},{"./View.js":"src/js/views/View.js","../../img/icons.svg":"src/img/icons.svg"}],"src/js/TimeAgo.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var timeAgo = function timeAgo(date) {
+  var timeStamp = new Date(date);
+  var timeElapsed = new Date() - timeStamp;
+  console.log(timeStamp);
+  console.log(timeElapsed);
+  var timeElapsedInSeconds = timeElapsed / 1000;
+  var timeElapsedInMinutes = timeElapsedInSeconds / 60;
+  var timeElapsedInHours = timeElapsedInMinutes / 60;
+  var timeElapsedInDays = timeElapsedInHours / 24;
+  var timeElapsedInMonths = timeElapsedInDays / 12;
+  var timeElapsedInYears = timeElapsedInYears / 365;
+
+  if (timeElapsedInYears > 1) {
+    return "".concat(Math.floor(timeElapsedInYears), " ").concat(timeElapsedInYears < 2 ? 'year ago' : 'years ago');
+  }
+
+  if (timeElapsedInMonths > 1 && timeElapsedInMonths < 13) {
+    return "".concat(Math.floor(timeElapsedInMonths), " ").concat(timeElapsedInMonths < 2 ? 'month ago' : 'months ago');
+  }
+
+  if (timeElapsedInDays > 1 && timeElapsedInDays < 31) {
+    return "".concat(Math.floor(timeElapsedInDays), " ").concat(timeElapsedInDays < 2 ? 'day ago' : 'days ago');
+  }
+
+  if (timeElapsedInHours > 1 && timeElapsedInHours < 24) {
+    return "".concat(Math.floor(timeElapsedInHours), " ").concat(timeElapsedInHours < 2 ? 'hour ago' : 'hours ago');
+  }
+
+  if (timeElapsedInMinutes > 1 && timeElapsedInMinutes < 60) {
+    return "".concat(Math.floor(timeElapsedInMinutes), " ").concat(timeElapsedInMinutes < 2 ? 'minute ago' : 'minutes ago');
+  }
+
+  if (timeElapsedInSeconds > 1 && timeElapsedInSeconds < 60) {
+    return "".concat(Math.floor(timeElapsedInSeconds), " ").concat(timeElapsedInSeconds < 2 ? 'second ago' : 'seconds ago');
+  }
+};
+
+var _default = timeAgo; //Notes:
+//The time ago function takes a date string in the past.
+//The time ago function will not work with dates in the future.
+//The date string should follow ISO 8601 syntax (JavaScript ISO Date)
+//For more information on the date format https://www.w3schools.com/js/js_date_formats.asp
+
+exports.default = _default;
+},{}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
 var global = arguments[3];
 var check = function (it) {
   return it && it.Math == Math && it;
@@ -13215,6 +13267,8 @@ var _resultsView = _interopRequireDefault(require("./views/resultsView.js"));
 
 var _paginationView = _interopRequireDefault(require("./views/paginationView.js"));
 
+var _TimeAgo = _interopRequireDefault(require("./TimeAgo"));
+
 require("regenerator-runtime/runtime");
 
 require("core-js/stable");
@@ -13357,8 +13411,9 @@ var init = function init() {
   _paginationView.default.handleEventListener(movePagination);
 };
 
+console.log((0, _TimeAgo.default)('2020-12-13'));
 init();
-},{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultsView.js":"src/js/views/resultsView.js","./views/paginationView.js":"src/js/views/paginationView.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","core-js/stable":"node_modules/core-js/stable/index.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultsView.js":"src/js/views/resultsView.js","./views/paginationView.js":"src/js/views/paginationView.js","./TimeAgo":"src/js/TimeAgo.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","core-js/stable":"node_modules/core-js/stable/index.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -13386,7 +13441,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52763" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51933" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
