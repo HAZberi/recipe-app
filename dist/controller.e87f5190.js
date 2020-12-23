@@ -1090,7 +1090,6 @@ exports.getSearchResults = getSearchResults;
 var getSearchResultsPerPage = function getSearchResultsPerPage() {
   var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.search.currentPage;
   state.search.currentPage = page;
-  console.log("Current Page:", state.search.currentPage);
   var start = (page - 1) * state.search.resultsPerPage;
   var end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
@@ -1868,8 +1867,7 @@ var PaginationView = /*#__PURE__*/function (_View) {
       var currentPage = _ref.currentPage,
           results = _ref.results,
           resultsPerPage = _ref.resultsPerPage;
-      var totalPages = Math.ceil(results.length / resultsPerPage);
-      console.log('Total Pages:', totalPages); //if there are more than one page
+      var totalPages = Math.ceil(results.length / resultsPerPage); //if there are more than one page
 
       if (currentPage === 1 && totalPages > 1) //type coercion required
         return this._generateButtonMarkup(currentPage * 1 + 1, 'next'); //if current page is the last page

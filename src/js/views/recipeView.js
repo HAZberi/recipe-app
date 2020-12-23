@@ -1,6 +1,7 @@
 //setting icons url for parcel
 //import icons from "url:../img/icons.svg"; Parcel 2
 import icons from '../../img/icons.svg'; // Parcel 1 still works
+//Fractional is a library to convert decimal places to fractions
 import { Fraction } from 'fractional';
 import View from "./View.js";
 

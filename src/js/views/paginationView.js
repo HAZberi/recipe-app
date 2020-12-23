@@ -16,7 +16,6 @@ class PaginationView extends View {
 
   _generateMarkup({ currentPage, results, resultsPerPage }) {
     const totalPages = Math.ceil(results.length / resultsPerPage);
-    console.log('Total Pages:', totalPages);
     //if there are more than one page
     if (currentPage === 1 && totalPages > 1)
       //type coercion required
