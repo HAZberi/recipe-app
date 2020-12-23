@@ -13,6 +13,17 @@ class RecipeView extends View{
         window.addEventListener(eventType, showRecipe)
       );
   }
+
+  handleServingsListener(changeServings){
+    this._parentElement.addEventListener("click", (e)=>{
+      const changeBtn = e.target.closest('.btn--tiny');
+      if(!changeBtn) return
+      const newServings = +changeBtn.dataset.updateTo;
+      if(newServings < 1) return
+      changeServings(newServings);
+    });
+  }
+
   _generateListOfIngridentsMarkup({ ingredients }) {
     return ingredients
       ?.map(ing => {
@@ -66,12 +77,12 @@ class RecipeView extends View{
             <span class="recipe__info-text">servings</span>
 
             <div class="recipe__info-buttons">
-              <button class="btn--tiny btn--increase-servings">
+              <button class="btn--tiny btn--increase-servings" data-update-to="${recipe.servings - 1}">
                 <svg>
                   <use href="${icons}#icon-minus-circle"></use>
                 </svg>
               </button>
-              <button class="btn--tiny btn--increase-servings">
+              <button class="btn--tiny btn--increase-servings" data-update-to="${recipe.servings + 1}">
                 <svg>
                   <use href="${icons}#icon-plus-circle"></use>
                 </svg>

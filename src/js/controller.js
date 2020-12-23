@@ -58,13 +58,20 @@ const movePagination = function (gotoPage) {
   PaginationView.render(model.state.search);
 };
 
+const changeServings = function(newServings){
+  //Update the state with new Servings coming from view
+  model.getNewServings(newServings);
+  //Re-render the recipe container
+  RecipeView.render(model.state);
+}
+
 const init = function () {
   RecipeView.handleEventListeners(showRecipe);
+  RecipeView.handleServingsListener(changeServings)
   SearchView.handleEventListener(showSearchResults);
   PaginationView.handleEventListener(movePagination);
 };
 
 
 
-console.log(TimeAgo('2020-12-13'));
 init();

@@ -33,6 +33,16 @@ export const getRecipe = async function (id) {
   }
 };
 
+export const getNewServings = function(newServings){
+  //Updating the change in quantity
+  state.recipe.ingredients.forEach(ingredient => {
+    //LOGIC: newQt = oldQt * newServing / oldServings // 4 = 2 * 4 / 2  
+    ingredient.quantity = ingredient.quantity * newServings / state.recipe.servings;
+  });
+  //Updating the newServings
+  state.recipe.servings = newServings;
+}
+
 export const getSearchResults = async function (query) {
   try {
     state.search.query = query;

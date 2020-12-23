@@ -957,7 +957,7 @@ exports.getJSON = getJSON;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getSearchResultsPerPage = exports.getSearchResults = exports.getRecipe = exports.state = void 0;
+exports.getSearchResultsPerPage = exports.getSearchResults = exports.getNewServings = exports.getRecipe = exports.state = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
 
@@ -1028,6 +1028,18 @@ var getRecipe = /*#__PURE__*/function () {
 }();
 
 exports.getRecipe = getRecipe;
+
+var getNewServings = function getNewServings(newServings) {
+  //Updating the change in quantity
+  state.recipe.ingredients.forEach(function (ingredient) {
+    //LOGIC: newQt = oldQt * newServing / oldServings // 4 = 2 * 4 / 2  
+    ingredient.quantity = ingredient.quantity * newServings / state.recipe.servings;
+  }); //Updating the newServings
+
+  state.recipe.servings = newServings;
+};
+
+exports.getNewServings = getNewServings;
 
 var getSearchResults = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(query) {
@@ -1486,7 +1498,8 @@ var View = /*#__PURE__*/function () {
   _createClass(View, [{
     key: "render",
     value: function render(data) {
-      if (!data || Array.isArray(data.results) && data.results.length === 0) throw new Error('No Results Available');
+      if (!data || Array.isArray(data.results) && data.results.length === 0) throw new Error('No Results Available'); //The data is coming from state === model -> controller -> view
+
       this._data = data;
 
       var markup = this._generateMarkup(this._data);
@@ -1603,6 +1616,17 @@ var RecipeView = /*#__PURE__*/function (_View) {
       });
     }
   }, {
+    key: "handleServingsListener",
+    value: function handleServingsListener(changeServings) {
+      this._parentElement.addEventListener("click", function (e) {
+        var changeBtn = e.target.closest('.btn--tiny');
+        if (!changeBtn) return;
+        var newServings = +changeBtn.dataset.updateTo;
+        if (newServings < 1) return;
+        changeServings(newServings);
+      });
+    }
+  }, {
     key: "_generateListOfIngridentsMarkup",
     value: function _generateListOfIngridentsMarkup(_ref) {
       var ingredients = _ref.ingredients;
@@ -1615,7 +1639,7 @@ var RecipeView = /*#__PURE__*/function (_View) {
     key: "_generateMarkup",
     value: function _generateMarkup(_ref2) {
       var recipe = _ref2.recipe;
-      return " \n        <figure class=\"recipe__fig\">\n          <img src=".concat(recipe.imageUrl, " alt=\"Tomato\" class=\"recipe__img\" />\n          <h1 class=\"recipe__title\">\n            <span>").concat(recipe.title, "</span>\n          </h1>\n        </figure>\n\n        <div class=\"recipe__details\">\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-clock\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--minutes\">").concat(recipe.cookingTime, "</span>\n            <span class=\"recipe__info-text\">minutes</span>\n          </div>\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-users\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--people\">").concat(recipe.servings, "</span>\n            <span class=\"recipe__info-text\">servings</span>\n\n            <div class=\"recipe__info-buttons\">\n              <button class=\"btn--tiny btn--increase-servings\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-minus-circle\"></use>\n                </svg>\n              </button>\n              <button class=\"btn--tiny btn--increase-servings\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-plus-circle\"></use>\n                </svg>\n              </button>\n            </div>\n          </div>\n\n          <div class=\"recipe__user-generated\">\n            <svg>\n              <use href=\"").concat(_icons.default, "#icon-user\"></use>\n            </svg>\n          </div>\n          <button class=\"btn--round\">\n            <svg class=\"\">\n              <use href=\"").concat(_icons.default, "#icon-bookmark-fill\"></use>\n            </svg>\n          </button>\n        </div>\n\n        <div class=\"recipe__ingredients\">\n          <h2 class=\"heading--2\">Recipe ingredients</h2>\n          <ul class=\"recipe__ingredient-list\">\n          ").concat(this._generateListOfIngridentsMarkup(recipe), "\n          </ul>\n        </div>\n\n        <div class=\"recipe__directions\">\n          <h2 class=\"heading--2\">How to cook it</h2>\n          <p class=\"recipe__directions-text\">\n            This recipe was carefully designed and tested by\n            <span class=\"recipe__publisher\">").concat(recipe.publisher, "</span>. Please check out\n            directions at their website.\n          </p>\n          <a\n            class=\"btn--small recipe__btn\"\n            href=").concat(recipe.sourceUrl, "\n            target=\"_blank\"\n          >\n            <span>Directions</span>\n            <svg class=\"search__icon\">\n              <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n            </svg>\n          </a>\n        </div>\n        ");
+      return " \n        <figure class=\"recipe__fig\">\n          <img src=".concat(recipe.imageUrl, " alt=\"Tomato\" class=\"recipe__img\" />\n          <h1 class=\"recipe__title\">\n            <span>").concat(recipe.title, "</span>\n          </h1>\n        </figure>\n\n        <div class=\"recipe__details\">\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-clock\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--minutes\">").concat(recipe.cookingTime, "</span>\n            <span class=\"recipe__info-text\">minutes</span>\n          </div>\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-users\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--people\">").concat(recipe.servings, "</span>\n            <span class=\"recipe__info-text\">servings</span>\n\n            <div class=\"recipe__info-buttons\">\n              <button class=\"btn--tiny btn--increase-servings\" data-update-to=\"").concat(recipe.servings - 1, "\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-minus-circle\"></use>\n                </svg>\n              </button>\n              <button class=\"btn--tiny btn--increase-servings\" data-update-to=\"").concat(recipe.servings + 1, "\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-plus-circle\"></use>\n                </svg>\n              </button>\n            </div>\n          </div>\n\n          <div class=\"recipe__user-generated\">\n            <svg>\n              <use href=\"").concat(_icons.default, "#icon-user\"></use>\n            </svg>\n          </div>\n          <button class=\"btn--round\">\n            <svg class=\"\">\n              <use href=\"").concat(_icons.default, "#icon-bookmark-fill\"></use>\n            </svg>\n          </button>\n        </div>\n\n        <div class=\"recipe__ingredients\">\n          <h2 class=\"heading--2\">Recipe ingredients</h2>\n          <ul class=\"recipe__ingredient-list\">\n          ").concat(this._generateListOfIngridentsMarkup(recipe), "\n          </ul>\n        </div>\n\n        <div class=\"recipe__directions\">\n          <h2 class=\"heading--2\">How to cook it</h2>\n          <p class=\"recipe__directions-text\">\n            This recipe was carefully designed and tested by\n            <span class=\"recipe__publisher\">").concat(recipe.publisher, "</span>. Please check out\n            directions at their website.\n          </p>\n          <a\n            class=\"btn--small recipe__btn\"\n            href=").concat(recipe.sourceUrl, "\n            target=\"_blank\"\n          >\n            <span>Directions</span>\n            <svg class=\"search__icon\">\n              <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n            </svg>\n          </a>\n        </div>\n        ");
     }
   }]);
 
@@ -1881,37 +1905,35 @@ exports.default = void 0;
 var timeAgo = function timeAgo(date) {
   var timeStamp = new Date(date);
   var timeElapsed = new Date() - timeStamp;
-  console.log(timeStamp);
-  console.log(timeElapsed);
   var timeElapsedInSeconds = timeElapsed / 1000;
   var timeElapsedInMinutes = timeElapsedInSeconds / 60;
   var timeElapsedInHours = timeElapsedInMinutes / 60;
   var timeElapsedInDays = timeElapsedInHours / 24;
-  var timeElapsedInMonths = timeElapsedInDays / 12;
-  var timeElapsedInYears = timeElapsedInYears / 365;
+  var timeElapsedInMonths = timeElapsedInDays / 30.42;
+  var timeElapsedInYears = timeElapsedInMonths / 12;
 
   if (timeElapsedInYears > 1) {
-    return "".concat(Math.floor(timeElapsedInYears), " ").concat(timeElapsedInYears < 2 ? 'year ago' : 'years ago');
+    return "".concat(Math.round(timeElapsedInYears), " ").concat(timeElapsedInYears < 2 ? 'year ago' : 'years ago');
   }
 
   if (timeElapsedInMonths > 1 && timeElapsedInMonths < 13) {
-    return "".concat(Math.floor(timeElapsedInMonths), " ").concat(timeElapsedInMonths < 2 ? 'month ago' : 'months ago');
+    return "".concat(Math.round(timeElapsedInMonths), " ").concat(timeElapsedInMonths < 2 ? 'month ago' : 'months ago');
   }
 
   if (timeElapsedInDays > 1 && timeElapsedInDays < 31) {
-    return "".concat(Math.floor(timeElapsedInDays), " ").concat(timeElapsedInDays < 2 ? 'day ago' : 'days ago');
+    return "".concat(Math.round(timeElapsedInDays), " ").concat(timeElapsedInDays < 2 ? 'day ago' : 'days ago');
   }
 
   if (timeElapsedInHours > 1 && timeElapsedInHours < 24) {
-    return "".concat(Math.floor(timeElapsedInHours), " ").concat(timeElapsedInHours < 2 ? 'hour ago' : 'hours ago');
+    return "".concat(Math.round(timeElapsedInHours), " ").concat(timeElapsedInHours < 2 ? 'hour ago' : 'hours ago');
   }
 
   if (timeElapsedInMinutes > 1 && timeElapsedInMinutes < 60) {
-    return "".concat(Math.floor(timeElapsedInMinutes), " ").concat(timeElapsedInMinutes < 2 ? 'minute ago' : 'minutes ago');
+    return "".concat(Math.round(timeElapsedInMinutes), " ").concat(timeElapsedInMinutes < 2 ? 'minute ago' : 'minutes ago');
   }
 
   if (timeElapsedInSeconds > 1 && timeElapsedInSeconds < 60) {
-    return "".concat(Math.floor(timeElapsedInSeconds), " ").concat(timeElapsedInSeconds < 2 ? 'second ago' : 'seconds ago');
+    return "".concat(Math.round(timeElapsedInSeconds), " ").concat(timeElapsedInSeconds < 2 ? 'second ago' : 'seconds ago');
   }
 };
 
@@ -13403,15 +13425,23 @@ var movePagination = function movePagination(gotoPage) {
   _paginationView.default.render(model.state.search);
 };
 
+var changeServings = function changeServings(newServings) {
+  //Update the state with new Servings coming from view
+  model.getNewServings(newServings); //Re-render the recipe container
+
+  _recipeView.default.render(model.state);
+};
+
 var init = function init() {
   _recipeView.default.handleEventListeners(showRecipe);
+
+  _recipeView.default.handleServingsListener(changeServings);
 
   _searchView.default.handleEventListener(showSearchResults);
 
   _paginationView.default.handleEventListener(movePagination);
 };
 
-console.log((0, _TimeAgo.default)('2020-12-13'));
 init();
 },{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultsView.js":"src/js/views/resultsView.js","./views/paginationView.js":"src/js/views/paginationView.js","./TimeAgo":"src/js/TimeAgo.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","core-js/stable":"node_modules/core-js/stable/index.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -13441,7 +13471,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51933" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59985" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
