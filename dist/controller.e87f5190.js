@@ -1788,6 +1788,21 @@ var _clearInput2 = function _clearInput2() {
 var _default = new SearchView();
 
 exports.default = _default;
+},{}],"src/js/views/recipePreview.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var generateListItem = function generateListItem(recipe) {
+  var id = window.location.hash.slice(1);
+  return "\n        <li class=\"preview\">\n            <a class=\"preview__link ".concat(id === recipe.id ? 'preview__link--active' : '', "\" href=\"#").concat(recipe.id, "\">\n            <figure class=\"preview__fig\">\n                <img src=\"").concat(recipe.imageUrl, "\" alt=\"").concat(recipe.title, "\" />\n            </figure>\n            <div class=\"preview__data\">\n                <h4 class=\"preview__title\">").concat(recipe.title, "</h4>\n                <p class=\"preview__publisher\">").concat(recipe.publisher, "</p>\n            </div>\n            </a>\n        </li>");
+};
+
+var _default = generateListItem;
+exports.default = _default;
 },{}],"src/js/views/resultsView.js":[function(require,module,exports) {
 "use strict";
 
@@ -1797,6 +1812,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _View2 = _interopRequireDefault(require("./View.js"));
+
+var _recipePreview = _interopRequireDefault(require("./recipePreview.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1850,14 +1867,8 @@ var ResultsView = /*#__PURE__*/function (_View) {
   _createClass(ResultsView, [{
     key: "_generateMarkup",
     value: function _generateMarkup(results) {
-      var markup = results.map(this._generateListItem).join('');
+      var markup = results.map(_recipePreview.default).join('');
       return markup;
-    }
-  }, {
-    key: "_generateListItem",
-    value: function _generateListItem(recipe) {
-      var id = window.location.hash.slice(1);
-      return "\n        <li class=\"preview\">\n            <a class=\"preview__link ".concat(id === recipe.id ? 'preview__link--active' : '', "\" href=\"#").concat(recipe.id, "\">\n            <figure class=\"preview__fig\">\n                <img src=\"").concat(recipe.imageUrl, "\" alt=\"").concat(recipe.title, "\" />\n            </figure>\n            <div class=\"preview__data\">\n                <h4 class=\"preview__title\">").concat(recipe.title, "</h4>\n                <p class=\"preview__publisher\">").concat(recipe.publisher, "</p>\n            </div>\n            </a>\n        </li>");
     }
   }]);
 
@@ -1867,7 +1878,7 @@ var ResultsView = /*#__PURE__*/function (_View) {
 var _default = new ResultsView();
 
 exports.default = _default;
-},{"./View.js":"src/js/views/View.js"}],"src/js/views/paginationView.js":[function(require,module,exports) {
+},{"./View.js":"src/js/views/View.js","./recipePreview.js":"src/js/views/recipePreview.js"}],"src/js/views/paginationView.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1978,6 +1989,8 @@ exports.default = void 0;
 
 var _View2 = _interopRequireDefault(require("./View.js"));
 
+var _recipePreview = _interopRequireDefault(require("./recipePreview.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -2031,14 +2044,8 @@ var BookmarksView = /*#__PURE__*/function (_View) {
     key: "_generateMarkup",
     value: function _generateMarkup(_ref) {
       var bookmarks = _ref.bookmarks;
-      var markup = bookmarks.map(this._generateListItem).join('');
+      var markup = bookmarks.map(_recipePreview.default).join('');
       return markup;
-    }
-  }, {
-    key: "_generateListItem",
-    value: function _generateListItem(recipe) {
-      var id = window.location.hash.slice(1);
-      return "\n        <li class=\"preview\">\n            <a class=\"preview__link ".concat(id === recipe.id ? 'preview__link--active' : '', "\" href=\"#").concat(recipe.id, "\">\n            <figure class=\"preview__fig\">\n                <img src=\"").concat(recipe.imageUrl, "\" alt=\"").concat(recipe.title, "\" />\n            </figure>\n            <div class=\"preview__data\">\n                <h4 class=\"preview__title\">").concat(recipe.title, "</h4>\n                <p class=\"preview__publisher\">").concat(recipe.publisher, "</p>\n            </div>\n            </a>\n        </li>");
     }
   }]);
 
@@ -2048,7 +2055,7 @@ var BookmarksView = /*#__PURE__*/function (_View) {
 var _default = new BookmarksView();
 
 exports.default = _default;
-},{"./View.js":"src/js/views/View.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
+},{"./View.js":"src/js/views/View.js","./recipePreview.js":"src/js/views/recipePreview.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
 var global = arguments[3];
 var check = function (it) {
   return it && it.Math == Math && it;
