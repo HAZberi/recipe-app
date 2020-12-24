@@ -3,7 +3,6 @@ import RecipeView from './views/recipeView.js';
 import SearchView from './views/searchView.js';
 import ResultsView from './views/resultsView.js';
 import PaginationView from './views/paginationView.js';
-import TimeAgo from "./TimeAgo";
 
 //Polyfilling Imports
 import 'regenerator-runtime/runtime';
@@ -63,19 +62,24 @@ const movePagination = function (gotoPage) {
 const changeServings = function(newServings){
   //Update the state with new Servings coming from view
   model.getNewServings(newServings);
-  //Re-render the recipe container
+  //Updating the recipe container
   RecipeView.update(model.state);
 }
 
 const controlBookmarks = function(recipe){
-  //Adding a Bookmark
-  model.addBookmark(recipe);
+  //if the recipe is already bookmarked then delete the bookmark
+  if(recipe.bookmarked) model.deleteBookmark(recipe);
+  //Adding a Bookmark and update the state
+  else model.addBookmark(recipe);
+  //Updating the recipe container
+  RecipeView.update(model.state);
 }
 
 
 const init = function () {
   RecipeView.handleEventListeners(showRecipe);
-  RecipeView.handleServingsListener(changeServings)
+  RecipeView.handleServingsListener(changeServings);
+  RecipeView.handleBookmarkListener(controlBookmarks);
   SearchView.handleEventListener(showSearchResults);
   PaginationView.handleEventListener(movePagination);
 };
