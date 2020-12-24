@@ -957,7 +957,7 @@ exports.getJSON = getJSON;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getSearchResultsPerPage = exports.getSearchResults = exports.getNewServings = exports.getRecipe = exports.state = void 0;
+exports.getSearchResultsPerPage = exports.setCurrentPage = exports.getSearchResults = exports.getNewServings = exports.getRecipe = exports.state = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
 
@@ -1063,21 +1063,23 @@ var getSearchResults = /*#__PURE__*/function () {
                 imageUrl: recipe.image_url,
                 title: recipe.title
               };
-            });
-            _context2.next = 12;
+            }); //always show the 1st page whenever user triggers a search
+
+            this.setCurrentPage(1);
+            _context2.next = 13;
             break;
 
-          case 9:
-            _context2.prev = 9;
+          case 10:
+            _context2.prev = 10;
             _context2.t0 = _context2["catch"](0);
             throw _context2.t0;
 
-          case 12:
+          case 13:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 9]]);
+    }, _callee2, this, [[0, 10]]);
   }));
 
   return function getSearchResults(_x2) {
@@ -1087,9 +1089,15 @@ var getSearchResults = /*#__PURE__*/function () {
 
 exports.getSearchResults = getSearchResults;
 
+var setCurrentPage = function setCurrentPage(page) {
+  state.search.currentPage = page;
+};
+
+exports.setCurrentPage = setCurrentPage;
+
 var getSearchResultsPerPage = function getSearchResultsPerPage() {
   var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.search.currentPage;
-  state.search.currentPage = page;
+  this.setCurrentPage(page);
   var start = (page - 1) * state.search.resultsPerPage;
   var end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
