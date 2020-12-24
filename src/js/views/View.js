@@ -19,7 +19,6 @@ export default class View {
     //The data is coming from state === model -> controller -> view
     this._data = data;
     const newMarkup = this._generateMarkup(this._data);
-
     //Creating a virtual dom instance with new markup
     const virtualDOM = document
       .createRange()
