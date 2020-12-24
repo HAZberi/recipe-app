@@ -957,7 +957,7 @@ exports.getJSON = getJSON;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getSearchResultsPerPage = exports.setCurrentPage = exports.getSearchResults = exports.getNewServings = exports.getRecipe = exports.state = void 0;
+exports.getSearchResultsPerPage = exports.getSearchResults = exports.getNewServings = exports.deleteBookmark = exports.addBookmark = exports.getRecipe = exports.state = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
 
@@ -978,7 +978,8 @@ var state = {
     results: [],
     resultsPerPage: _config.RESULTS_PER_PAGE,
     currentPage: 1
-  }
+  },
+  bookmarks: []
 };
 exports.state = state;
 
@@ -1004,22 +1005,27 @@ var getRecipe = /*#__PURE__*/function () {
               ingredients: recipe.ingredients,
               title: recipe.title,
               servings: recipe.servings,
-              cookingTime: recipe.cooking_time
-            };
-            _context.next = 11;
+              cookingTime: recipe.cooking_time,
+              bookmarked: false
+            }; //if a recipe is already bookmarked
+
+            if (state.bookmarks.some(function (recipe) {
+              return recipe.id === id;
+            })) state.recipe.bookmarked = true;
+            _context.next = 12;
             break;
 
-          case 8:
-            _context.prev = 8;
+          case 9:
+            _context.prev = 9;
             _context.t0 = _context["catch"](0);
             throw _context.t0;
 
-          case 11:
+          case 12:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 8]]);
+    }, _callee, null, [[0, 9]]);
   }));
 
   return function getRecipe(_x) {
@@ -1029,10 +1035,31 @@ var getRecipe = /*#__PURE__*/function () {
 
 exports.getRecipe = getRecipe;
 
+var addBookmark = function addBookmark(recipe) {
+  //Add recipe in bookmarks
+  state.bookmarks.push(recipe); //Update the bookmark status on recipe
+
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+};
+
+exports.addBookmark = addBookmark;
+
+var deleteBookmark = function deleteBookmark(recipe) {
+  //Delete recipe in bookmarks
+  var deleteLocation = state.bookmarks.findIndex(function (bookmark) {
+    return bookmark.id === recipe.id;
+  });
+  state.bookmarks.splice(deleteLocation, 1); //Update the bookmark status on recipe
+
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = false;
+};
+
+exports.deleteBookmark = deleteBookmark;
+
 var getNewServings = function getNewServings(newServings) {
   //Updating the change in quantity
   state.recipe.ingredients.forEach(function (ingredient) {
-    //LOGIC: newQt = oldQt * newServing / oldServings // 4 = 2 * 4 / 2  
+    //LOGIC: newQt = oldQt * newServing / oldServings // 4 = 2 * 4 / 2
     ingredient.quantity = ingredient.quantity * newServings / state.recipe.servings;
   }); //Updating the newServings
 
@@ -1065,7 +1092,7 @@ var getSearchResults = /*#__PURE__*/function () {
               };
             }); //always show the 1st page whenever user triggers a search
 
-            this.setCurrentPage(1);
+            setCurrentPage(1);
             _context2.next = 13;
             break;
 
@@ -1079,7 +1106,7 @@ var getSearchResults = /*#__PURE__*/function () {
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[0, 10]]);
+    }, _callee2, null, [[0, 10]]);
   }));
 
   return function getSearchResults(_x2) {
@@ -1093,11 +1120,9 @@ var setCurrentPage = function setCurrentPage(page) {
   state.search.currentPage = page;
 };
 
-exports.setCurrentPage = setCurrentPage;
-
 var getSearchResultsPerPage = function getSearchResultsPerPage() {
   var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state.search.currentPage;
-  this.setCurrentPage(page);
+  setCurrentPage(page);
   var start = (page - 1) * state.search.resultsPerPage;
   var end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
@@ -13473,6 +13498,11 @@ var changeServings = function changeServings(newServings) {
   model.getNewServings(newServings); //Re-render the recipe container
 
   _recipeView.default.update(model.state);
+};
+
+var controlBookmarks = function controlBookmarks(recipe) {
+  //Adding a Bookmark
+  model.addBookmark(recipe);
 };
 
 var init = function init() {

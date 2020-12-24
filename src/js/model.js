@@ -11,6 +11,7 @@ export const state = {
     resultsPerPage: RESULTS_PER_PAGE,
     currentPage: 1,
   },
+  bookmarks: [],
 };
 
 export const getRecipe = async function (id) {
@@ -27,21 +28,43 @@ export const getRecipe = async function (id) {
       title: recipe.title,
       servings: recipe.servings,
       cookingTime: recipe.cooking_time,
+      bookmarked: false,
     };
+    //if a recipe is already bookmarked
+    if (state.bookmarks.some(recipe => recipe.id === id))
+      state.recipe.bookmarked = true;
   } catch (error) {
     throw error;
   }
 };
 
-export const getNewServings = function(newServings){
+export const addBookmark = function (recipe) {
+  //Add recipe in bookmarks
+  state.bookmarks.push(recipe);
+  //Update the bookmark status on recipe
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+};
+
+export const deleteBookmark = function (recipe) {
+  //Delete recipe in bookmarks
+  const deleteLocation = state.bookmarks.findIndex(
+    bookmark => bookmark.id === recipe.id
+  );
+  state.bookmarks.splice(deleteLocation, 1);
+  //Update the bookmark status on recipe
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = false;
+};
+
+export const getNewServings = function (newServings) {
   //Updating the change in quantity
   state.recipe.ingredients.forEach(ingredient => {
-    //LOGIC: newQt = oldQt * newServing / oldServings // 4 = 2 * 4 / 2  
-    ingredient.quantity = ingredient.quantity * newServings / state.recipe.servings;
+    //LOGIC: newQt = oldQt * newServing / oldServings // 4 = 2 * 4 / 2
+    ingredient.quantity =
+      (ingredient.quantity * newServings) / state.recipe.servings;
   });
   //Updating the newServings
   state.recipe.servings = newServings;
-}
+};
 
 export const getSearchResults = async function (query) {
   try {
@@ -57,18 +80,20 @@ export const getSearchResults = async function (query) {
       };
     });
     //always show the 1st page whenever user triggers a search
-    this.setCurrentPage(1);
+    setCurrentPage(1);
   } catch (error) {
     throw error;
   }
 };
 
-export const setCurrentPage = function(page){
+const setCurrentPage = function (page) {
   state.search.currentPage = page;
-}
+};
 
-export const getSearchResultsPerPage = function (page = state.search.currentPage) {
-  this.setCurrentPage(page);
+export const getSearchResultsPerPage = function (
+  page = state.search.currentPage
+) {
+  setCurrentPage(page);
   const start = (page - 1) * state.search.resultsPerPage;
   const end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);

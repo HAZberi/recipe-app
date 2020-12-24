@@ -67,6 +67,12 @@ const changeServings = function(newServings){
   RecipeView.update(model.state);
 }
 
+const controlBookmarks = function(recipe){
+  //Adding a Bookmark
+  model.addBookmark(recipe);
+}
+
+
 const init = function () {
   RecipeView.handleEventListeners(showRecipe);
   RecipeView.handleServingsListener(changeServings)
