@@ -23,6 +23,8 @@ const showRecipe = async function () {
     if (!id) return;
     //Adding a spinner while we wait for the API to fetch
     RecipeView.loadingSpinner();
+    //Update Search Results to mark the selected recipe
+    ResultsView.update(model.getSearchResultsPerPage()); 
     //STEP 1 Fetching the recipe
     await model.getRecipe(id);
     //Step2 Rendering the recipe
@@ -62,7 +64,7 @@ const changeServings = function(newServings){
   //Update the state with new Servings coming from view
   model.getNewServings(newServings);
   //Re-render the recipe container
-  RecipeView.render(model.state);
+  RecipeView.update(model.state);
 }
 
 const init = function () {

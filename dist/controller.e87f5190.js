@@ -1511,6 +1511,39 @@ var View = /*#__PURE__*/function () {
       this._parentElement.innerHTML = '';
 
       this._parentElement.insertAdjacentHTML('afterbegin', markup);
+    } //Update text and data attribute without re-rendering the entire parentEl
+
+  }, {
+    key: "update",
+    value: function update(data) {
+      //The data is coming from state === model -> controller -> view
+      this._data = data;
+
+      var newMarkup = this._generateMarkup(this._data); //Creating a virtual dom instance with new markup
+
+
+      var virtualDOM = document.createRange().createContextualFragment(newMarkup); //Selecting All the elements in VirtualDOM and converting to Array for comparisons
+
+      var newElements = Array.from(virtualDOM.querySelectorAll('*')); //Selecting All the elements in ActualDOM and converting to Array for comparisons
+
+      var currElements = Array.from(this._parentElement.querySelectorAll('*')); //Comparing the two DOMs by looping over
+
+      newElements.forEach(function (newElement, i) {
+        //check if the nodes are NOT equal
+        if (!newElement.isEqualNode(currElements[i])) {
+          var _newElement$firstChil;
+
+          //Update the attributes
+          Array.from(newElement.attributes).forEach(function (attr) {
+            return currElements[i].setAttribute(attr.name, attr.value);
+          }); // check if nodes have a nodeValue !== empty
+
+          if (((_newElement$firstChil = newElement.firstChild) === null || _newElement$firstChil === void 0 ? void 0 : _newElement$firstChil.nodeValue.trim()) !== '') {
+            //Update the text Content
+            currElements[i].textContent = newElement.textContent;
+          }
+        }
+      });
     } //Lodaing Spinner Helper Function
 
   }, {
@@ -1781,7 +1814,8 @@ var ResultsView = /*#__PURE__*/function (_View) {
   }, {
     key: "_generateListItem",
     value: function _generateListItem(recipe) {
-      return "\n        <li class=\"preview\">\n            <a class=\"preview__link \" href=\"#".concat(recipe.id, "\">\n            <figure class=\"preview__fig\">\n                <img src=\"").concat(recipe.imageUrl, "\" alt=\"").concat(recipe.title, "\" />\n            </figure>\n            <div class=\"preview__data\">\n                <h4 class=\"preview__title\">").concat(recipe.title, "</h4>\n                <p class=\"preview__publisher\">").concat(recipe.publisher, "</p>\n            </div>\n            </a>\n        </li>");
+      var id = window.location.hash.slice(1);
+      return "\n        <li class=\"preview\">\n            <a class=\"preview__link ".concat(id === recipe.id ? 'preview__link--active' : '', "\" href=\"#").concat(recipe.id, "\">\n            <figure class=\"preview__fig\">\n                <img src=\"").concat(recipe.imageUrl, "\" alt=\"").concat(recipe.title, "\" />\n            </figure>\n            <div class=\"preview__data\">\n                <h4 class=\"preview__title\">").concat(recipe.title, "</h4>\n                <p class=\"preview__publisher\">").concat(recipe.publisher, "</p>\n            </div>\n            </a>\n        </li>");
     }
   }]);
 
@@ -13328,32 +13362,35 @@ var showRecipe = /*#__PURE__*/function () {
 
           case 4:
             //Adding a spinner while we wait for the API to fetch
-            _recipeView.default.loadingSpinner(); //STEP 1 Fetching the recipe
+            _recipeView.default.loadingSpinner(); //Update Search Results to mark the selected recipe
 
 
-            _context.next = 7;
+            _resultsView.default.update(model.getSearchResultsPerPage()); //STEP 1 Fetching the recipe
+
+
+            _context.next = 8;
             return model.getRecipe(id);
 
-          case 7:
+          case 8:
             //Step2 Rendering the recipe
             _recipeView.default.render(model.state);
 
-            _context.next = 14;
+            _context.next = 15;
             break;
 
-          case 10:
-            _context.prev = 10;
+          case 11:
+            _context.prev = 11;
             _context.t0 = _context["catch"](0);
             console.error(_context.t0);
 
             _recipeView.default.renderError();
 
-          case 14:
+          case 15:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 10]]);
+    }, _callee, null, [[0, 11]]);
   }));
 
   return function showRecipe() {
@@ -13427,7 +13464,7 @@ var changeServings = function changeServings(newServings) {
   //Update the state with new Servings coming from view
   model.getNewServings(newServings); //Re-render the recipe container
 
-  _recipeView.default.render(model.state);
+  _recipeView.default.update(model.state);
 };
 
 var init = function init() {
