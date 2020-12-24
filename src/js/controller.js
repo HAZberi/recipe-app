@@ -3,6 +3,7 @@ import RecipeView from './views/recipeView.js';
 import SearchView from './views/searchView.js';
 import ResultsView from './views/resultsView.js';
 import PaginationView from './views/paginationView.js';
+import BookmarksView from "./views/bookmarksView.js";
 
 //Polyfilling Imports
 import 'regenerator-runtime/runtime';
@@ -22,8 +23,9 @@ const showRecipe = async function () {
     if (!id) return;
     //Adding a spinner while we wait for the API to fetch
     RecipeView.loadingSpinner();
-    //Update Search Results to mark the selected recipe
-    ResultsView.update(model.getSearchResultsPerPage()); 
+    //Update Search Results and Bookmark list to mark the selected recipe
+    ResultsView.update(model.getSearchResultsPerPage());
+    BookmarksView.update(model.state);
     //STEP 1 Fetching the recipe
     await model.getRecipe(id);
     //Step2 Rendering the recipe
@@ -73,6 +75,8 @@ const controlBookmarks = function(recipe){
   else model.addBookmark(recipe);
   //Updating the recipe container
   RecipeView.update(model.state);
+  //Re-rendering the Bookmark Lists
+  BookmarksView.render(model.state);
 }
 
 

@@ -1,11 +1,11 @@
 import View from './View.js';
 
-class ResultsView extends View {
-  _parentElement = document.querySelector('.results');
+class BookmarksView extends View {
+  _parentElement = document.querySelector('.bookmarks__list');
   _errorMessage =
-    'No results found. Please search for something else or try again.';
-  _generateMarkup(results) {
-    const markup = results.map(this._generateListItem).join('');
+    'No bookmarks to show';
+  _generateMarkup({ bookmarks }) {
+    const markup = bookmarks.map(this._generateListItem).join('');
     return markup;
   }
   _generateListItem(recipe) {
@@ -25,4 +25,4 @@ class ResultsView extends View {
   }
 }
 
-export default new ResultsView();
+export default new BookmarksView();

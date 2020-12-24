@@ -1530,7 +1530,7 @@ var View = /*#__PURE__*/function () {
   _createClass(View, [{
     key: "render",
     value: function render(data) {
-      if (!data || Array.isArray(data.results) && data.results.length === 0) throw new Error('No Results Available'); //The data is coming from state === model -> controller -> view
+      if (!data || Array.isArray(data.results) && data.results.length === 0) throw new Error('No Data Available'); //The data is coming from state === model -> controller -> view
 
       this._data = data;
 
@@ -1844,8 +1844,6 @@ var ResultsView = /*#__PURE__*/function (_View) {
 
     _defineProperty(_assertThisInitialized(_this), "_errorMessage", 'No results found. Please search for something else or try again.');
 
-    _defineProperty(_assertThisInitialized(_this), "_message", 'Start by searching for a recipe or an ingredient. Have fun!');
-
     return _this;
   }
 
@@ -1970,7 +1968,87 @@ var PaginationView = /*#__PURE__*/function (_View) {
 var _default = new PaginationView();
 
 exports.default = _default;
-},{"./View.js":"src/js/views/View.js","../../img/icons.svg":"src/img/icons.svg"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
+},{"./View.js":"src/js/views/View.js","../../img/icons.svg":"src/img/icons.svg"}],"src/js/views/bookmarksView.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _View2 = _interopRequireDefault(require("./View.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var BookmarksView = /*#__PURE__*/function (_View) {
+  _inherits(BookmarksView, _View);
+
+  var _super = _createSuper(BookmarksView);
+
+  function BookmarksView() {
+    var _this;
+
+    _classCallCheck(this, BookmarksView);
+
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _super.call.apply(_super, [this].concat(args));
+
+    _defineProperty(_assertThisInitialized(_this), "_parentElement", document.querySelector('.bookmarks__list'));
+
+    _defineProperty(_assertThisInitialized(_this), "_errorMessage", 'No bookmarks to show');
+
+    return _this;
+  }
+
+  _createClass(BookmarksView, [{
+    key: "_generateMarkup",
+    value: function _generateMarkup(_ref) {
+      var bookmarks = _ref.bookmarks;
+      var markup = bookmarks.map(this._generateListItem).join('');
+      return markup;
+    }
+  }, {
+    key: "_generateListItem",
+    value: function _generateListItem(recipe) {
+      var id = window.location.hash.slice(1);
+      return "\n        <li class=\"preview\">\n            <a class=\"preview__link ".concat(id === recipe.id ? 'preview__link--active' : '', "\" href=\"#").concat(recipe.id, "\">\n            <figure class=\"preview__fig\">\n                <img src=\"").concat(recipe.imageUrl, "\" alt=\"").concat(recipe.title, "\" />\n            </figure>\n            <div class=\"preview__data\">\n                <h4 class=\"preview__title\">").concat(recipe.title, "</h4>\n                <p class=\"preview__publisher\">").concat(recipe.publisher, "</p>\n            </div>\n            </a>\n        </li>");
+    }
+  }]);
+
+  return BookmarksView;
+}(_View2.default);
+
+var _default = new BookmarksView();
+
+exports.default = _default;
+},{"./View.js":"src/js/views/View.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
 var global = arguments[3];
 var check = function (it) {
   return it && it.Math == Math && it;
@@ -13315,6 +13393,8 @@ var _resultsView = _interopRequireDefault(require("./views/resultsView.js"));
 
 var _paginationView = _interopRequireDefault(require("./views/paginationView.js"));
 
+var _bookmarksView = _interopRequireDefault(require("./views/bookmarksView.js"));
+
 require("regenerator-runtime/runtime");
 
 require("core-js/stable");
@@ -13354,35 +13434,37 @@ var showRecipe = /*#__PURE__*/function () {
 
           case 4:
             //Adding a spinner while we wait for the API to fetch
-            _recipeView.default.loadingSpinner(); //Update Search Results to mark the selected recipe
+            _recipeView.default.loadingSpinner(); //Update Search Results and Bookmark list to mark the selected recipe
 
 
-            _resultsView.default.update(model.getSearchResultsPerPage()); //STEP 1 Fetching the recipe
+            _resultsView.default.update(model.getSearchResultsPerPage());
+
+            _bookmarksView.default.update(model.state); //STEP 1 Fetching the recipe
 
 
-            _context.next = 8;
+            _context.next = 9;
             return model.getRecipe(id);
 
-          case 8:
+          case 9:
             //Step2 Rendering the recipe
             _recipeView.default.render(model.state);
 
-            _context.next = 15;
+            _context.next = 16;
             break;
 
-          case 11:
-            _context.prev = 11;
+          case 12:
+            _context.prev = 12;
             _context.t0 = _context["catch"](0);
             console.error(_context.t0);
 
             _recipeView.default.renderError();
 
-          case 15:
+          case 16:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 11]]);
+    }, _callee, null, [[0, 12]]);
   }));
 
   return function showRecipe() {
@@ -13464,7 +13546,10 @@ var controlBookmarks = function controlBookmarks(recipe) {
   if (recipe.bookmarked) model.deleteBookmark(recipe); //Adding a Bookmark and update the state
   else model.addBookmark(recipe); //Updating the recipe container
 
-  _recipeView.default.update(model.state);
+  _recipeView.default.update(model.state); //Re-rendering the Bookmark Lists
+
+
+  _bookmarksView.default.render(model.state);
 };
 
 var init = function init() {
@@ -13480,7 +13565,7 @@ var init = function init() {
 };
 
 init();
-},{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultsView.js":"src/js/views/resultsView.js","./views/paginationView.js":"src/js/views/paginationView.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","core-js/stable":"node_modules/core-js/stable/index.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultsView.js":"src/js/views/resultsView.js","./views/paginationView.js":"src/js/views/paginationView.js","./views/bookmarksView.js":"src/js/views/bookmarksView.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","core-js/stable":"node_modules/core-js/stable/index.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
