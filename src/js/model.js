@@ -15,6 +15,22 @@ export const state = {
   bookmarks: [],
 };
 
+const recipeObject = function(recipe){
+  console.log(recipe);
+  return {
+    id: recipe.id,
+    publisher: recipe.publisher,
+    sourceUrl: recipe.source_url,
+    imageUrl: recipe.image_url,
+    ingredients: recipe.ingredients,
+    title: recipe.title,
+    servings: recipe.servings,
+    cookingTime: recipe.cooking_time,
+    //Following key/value is specific to this project and doesnt come from API
+    bookmarked: false,
+  }
+}
+
 export const getRecipe = async function (id) {
   try {
     const data = await getJSON(`${API_URL}${id}`);
@@ -63,11 +79,14 @@ export const deleteBookmark = function (recipe) {
 
 //helper function to get the data from state and store
 //Note: This function has side effects
-const updateBookmarkListInLocalStorage = function (){
-
+const updateBookmarkListInLocalStorage = function () {
   localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
 
-}
+//clear bookmarks
+const clearBookmarks = function () {
+  localStorage.clear('bookmarks');
+};
 
 export const getNewServings = function (newServings) {
   //Updating the change in quantity
@@ -115,16 +134,43 @@ export const getSearchResultsPerPage = function (
   return state.search.results.slice(start, end);
 };
 
+export const uploadRecipe = async function (newRecipe) {
+  try {
+    const ingredients = Object.entries(newRecipe)
+      .filter(e => e[0].startsWith('ingredient') && e[1] !== '')
+      .map(e => e[1].split(','))
+      .map(ing => {
+        if (ing.length !== 3)
+          throw new Error(
+            'Wrong Format!! Ingredients must be entered as following "Quantity, Unit, Description" '
+          );
+
+        const [quantity, unit, description] = ing;
+        return { quantity: quantity ? +quantity : null, unit, description };
+      });
+    
+    console.log(ingredients);
+    const recipeToUpload = {
+      publisher: newRecipe.publisher,
+      source_url: newRecipe.sourceUrl,
+      image_url: newRecipe.imageUrl,
+      cooking_time: newRecipe.cookingTime,
+      title: newRecipe.title,
+      servings: newRecipe.servings,
+      ingredients
+    }
+    console.log(recipeToUpload);
+  } catch (err) {
+    throw err;
+  }
+};
+
 //A initialization function to get the data from local storage
 const init = () => {
   //get data from storage
   const bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
   //if bookmarks exist in storage - update the state
-  if(bookmarks) state.bookmarks = bookmarks;
-}
-
-//
-
-
+  if (bookmarks) state.bookmarks = bookmarks;
+};
 
 init();

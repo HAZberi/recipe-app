@@ -15,29 +15,30 @@ class AddRecipeView extends View {
     this._hideModalWindowListener();
   }
 
-  _toggleHiddenElements() {
+  toggleHiddenElements() {
     this._window.classList.toggle('hidden');
     this._overlay.classList.toggle('hidden');
   }
   _showModalWindowListener() {
     this._btnOpen.addEventListener(
       'click',
-      this._toggleHiddenElements.bind(this)
+      this.toggleHiddenElements.bind(this)
     );
   }
   _hideModalWindowListener() {
-    [this._btnClose, this._overlay, this._btnUpload].forEach(el =>
-      el.addEventListener('click', this._toggleHiddenElements.bind(this))
+    [this._btnClose, this._overlay].forEach(el =>
+      el.addEventListener('click', this.toggleHiddenElements.bind(this))
     );
   }
-  submitRecipeListener(getNewlyAddedRecipe) {
+  submitRecipeListener(uploadNewRecipe) {
     this._parentElement.addEventListener('submit', e => {
       e.preventDefault();
       const getData = new FormData(this._parentElement);
       const dataObject = Object.fromEntries([...getData]);
-      getNewlyAddedRecipe(dataObject);
+      uploadNewRecipe(dataObject);
     });
   }
 }
 
 export default new AddRecipeView();
+

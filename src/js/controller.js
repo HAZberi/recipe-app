@@ -84,9 +84,15 @@ const showBookmarksFromStorage = function(){
   BookmarksView.render(model.state);
 }
 
-const getNewlyAddedRecipe = function(newRecipe){
-  console.log("Called");
-  console.log(newRecipe);
+const uploadNewRecipe = async function(newRecipe){
+  try{
+    //Upload a new Recipe
+    model.uploadRecipe(newRecipe);
+  }catch(err){
+    console.error(err);
+    AddRecipeView.renderError();
+  }
+
 }
 
 
@@ -101,7 +107,7 @@ const init = function () {
   //Search Pagination and AddRecipe Action doesn't need to be in order
   SearchView.handleEventListener(showSearchResults);
   PaginationView.handleEventListener(movePagination);
-  AddRecipeView.submitRecipeListener(getNewlyAddedRecipe);
+  AddRecipeView.submitRecipeListener(uploadNewRecipe);
 
 };
 

@@ -957,13 +957,25 @@ exports.getJSON = getJSON;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getSearchResultsPerPage = exports.getSearchResults = exports.getNewServings = exports.deleteBookmark = exports.addBookmark = exports.getRecipe = exports.state = void 0;
+exports.uploadRecipe = exports.getSearchResultsPerPage = exports.getSearchResults = exports.getNewServings = exports.deleteBookmark = exports.addBookmark = exports.getRecipe = exports.state = void 0;
 
 var _regeneratorRuntime = require("regenerator-runtime");
 
 var _config = require("./config");
 
 var _helper = require("./helper.js");
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -982,6 +994,22 @@ var state = {
   bookmarks: []
 };
 exports.state = state;
+
+var recipeObject = function recipeObject(recipe) {
+  console.log(recipe);
+  return {
+    id: recipe.id,
+    publisher: recipe.publisher,
+    sourceUrl: recipe.source_url,
+    imageUrl: recipe.image_url,
+    ingredients: recipe.ingredients,
+    title: recipe.title,
+    servings: recipe.servings,
+    cookingTime: recipe.cooking_time,
+    //Following key/value is specific to this project and doesnt come from API
+    bookmarked: false
+  };
+};
 
 var getRecipe = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(id) {
@@ -1065,6 +1093,11 @@ exports.deleteBookmark = deleteBookmark;
 
 var updateBookmarkListInLocalStorage = function updateBookmarkListInLocalStorage() {
   localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+}; //clear bookmarks
+
+
+var clearBookmarks = function clearBookmarks() {
+  localStorage.clear('bookmarks');
 };
 
 var getNewServings = function getNewServings(newServings) {
@@ -1139,18 +1172,77 @@ var getSearchResultsPerPage = function getSearchResultsPerPage() {
   var start = (page - 1) * state.search.resultsPerPage;
   var end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
-}; //A initialization function to get the data from local storage
-
+};
 
 exports.getSearchResultsPerPage = getSearchResultsPerPage;
+
+var uploadRecipe = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(newRecipe) {
+    var ingredients, recipeToUpload;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            ingredients = Object.entries(newRecipe).filter(function (e) {
+              return e[0].startsWith('ingredient') && e[1] !== '';
+            }).map(function (e) {
+              return e[1].split(',');
+            }).map(function (ing) {
+              if (ing.length !== 3) throw new Error('Wrong Format!! Ingredients must be entered as following "Quantity, Unit, Description" ');
+
+              var _ing = _slicedToArray(ing, 3),
+                  quantity = _ing[0],
+                  unit = _ing[1],
+                  description = _ing[2];
+
+              return {
+                quantity: quantity ? +quantity : null,
+                unit: unit,
+                description: description
+              };
+            });
+            console.log(ingredients);
+            recipeToUpload = {
+              publisher: newRecipe.publisher,
+              source_url: newRecipe.sourceUrl,
+              image_url: newRecipe.imageUrl,
+              cooking_time: newRecipe.cookingTime,
+              title: newRecipe.title,
+              servings: newRecipe.servings,
+              ingredients: ingredients
+            };
+            console.log(recipeToUpload);
+            _context3.next = 10;
+            break;
+
+          case 7:
+            _context3.prev = 7;
+            _context3.t0 = _context3["catch"](0);
+            throw _context3.t0;
+
+          case 10:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[0, 7]]);
+  }));
+
+  return function uploadRecipe(_x3) {
+    return _ref3.apply(this, arguments);
+  };
+}(); //A initialization function to get the data from local storage
+
+
+exports.uploadRecipe = uploadRecipe;
 
 var init = function init() {
   //get data from storage
   var bookmarks = JSON.parse(localStorage.getItem('bookmarks')); //if bookmarks exist in storage - update the state
 
   if (bookmarks) state.bookmarks = bookmarks;
-}; //
-
+};
 
 init();
 },{"regenerator-runtime":"node_modules/regenerator-runtime/runtime.js","./config":"src/js/config.js","./helper.js":"src/js/helper.js"}],"src/img/icons.svg":[function(require,module,exports) {
@@ -2164,8 +2256,8 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
   }
 
   _createClass(AddRecipeView, [{
-    key: "_toggleHiddenElements",
-    value: function _toggleHiddenElements() {
+    key: "toggleHiddenElements",
+    value: function toggleHiddenElements() {
       this._window.classList.toggle('hidden');
 
       this._overlay.classList.toggle('hidden');
@@ -2173,27 +2265,27 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
   }, {
     key: "_showModalWindowListener",
     value: function _showModalWindowListener() {
-      this._btnOpen.addEventListener('click', this._toggleHiddenElements.bind(this));
+      this._btnOpen.addEventListener('click', this.toggleHiddenElements.bind(this));
     }
   }, {
     key: "_hideModalWindowListener",
     value: function _hideModalWindowListener() {
       var _this2 = this;
 
-      [this._btnClose, this._overlay, this._btnUpload].forEach(function (el) {
-        return el.addEventListener('click', _this2._toggleHiddenElements.bind(_this2));
+      [this._btnClose, this._overlay].forEach(function (el) {
+        return el.addEventListener('click', _this2.toggleHiddenElements.bind(_this2));
       });
     }
   }, {
     key: "submitRecipeListener",
-    value: function submitRecipeListener(getNewlyAddedRecipe) {
+    value: function submitRecipeListener(uploadNewRecipe) {
       var _this3 = this;
 
       this._parentElement.addEventListener('submit', function (e) {
         e.preventDefault();
         var getData = new FormData(_this3._parentElement);
         var dataObject = Object.fromEntries(_toConsumableArray(getData));
-        getNewlyAddedRecipe(dataObject);
+        uploadNewRecipe(dataObject);
       });
     }
   }]);
@@ -13714,10 +13806,33 @@ var showBookmarksFromStorage = function showBookmarksFromStorage() {
   _bookmarksView.default.render(model.state);
 };
 
-var getNewlyAddedRecipe = function getNewlyAddedRecipe(newRecipe) {
-  console.log("Called");
-  console.log(newRecipe);
-};
+var uploadNewRecipe = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(newRecipe) {
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            try {
+              //Upload a new Recipe
+              model.uploadRecipe(newRecipe);
+            } catch (err) {
+              console.error(err);
+
+              _addRecipeView.default.renderError();
+            }
+
+          case 1:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
+  }));
+
+  return function uploadNewRecipe(_x) {
+    return _ref3.apply(this, arguments);
+  };
+}();
 
 var init = function init() {
   //Following Bookmark handler has side-effects! It must be called 1st 
@@ -13736,7 +13851,7 @@ var init = function init() {
 
   _paginationView.default.handleEventListener(movePagination);
 
-  _addRecipeView.default.submitRecipeListener(getNewlyAddedRecipe);
+  _addRecipeView.default.submitRecipeListener(uploadNewRecipe);
 };
 
 init();
@@ -13768,7 +13883,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52135" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63587" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
