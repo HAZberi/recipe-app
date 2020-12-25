@@ -2,8 +2,18 @@ import icons from '../../img/icons.svg';
 
 export default class View {
   _data;
+  constructor() {
+    this.renderError = this.renderError.bind(this);
+    this.renderMessage = this.renderMessage.bind(this);
+  }
   render(data) {
-    if (!data || (Array.isArray(data.results) && data.results.length === 0))
+    console.log(data);
+    if (
+      !data ||
+      (Array.isArray(data.results) &&
+        data.results.length === 0) ||
+        data.bookmarks.length === 0
+    )
       throw new Error('No Data Available');
     //The data is coming from state === model -> controller -> view
     this._data = data;

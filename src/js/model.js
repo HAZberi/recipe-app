@@ -1,6 +1,6 @@
 import { async } from 'regenerator-runtime';
-import { API_URL, RESULTS_PER_PAGE } from './config';
-import { getJSON } from './helper.js';
+import { API_KEY, API_URL, RESULTS_PER_PAGE } from './config';
+import { getJSON, sendJSON } from './helper.js';
 // https://forkify-api.herokuapp.com/v2
 // APIKEY = 6d3db235-e538-465d-a436-f128c640bd9a
 
@@ -28,6 +28,7 @@ const recipeObject = function(recipe){
     cookingTime: recipe.cooking_time,
     //Following key/value is specific to this project and doesnt come from API
     bookmarked: false,
+    ...(recipe.key && {key: recipe.key}),
   }
 }
 
@@ -36,18 +37,7 @@ export const getRecipe = async function (id) {
     const data = await getJSON(`${API_URL}${id}`);
 
     const { recipe } = data.data;
-    state.recipe = {
-      id: recipe.id,
-      publisher: recipe.publisher,
-      sourceUrl: recipe.source_url,
-      imageUrl: recipe.image_url,
-      ingredients: recipe.ingredients,
-      title: recipe.title,
-      servings: recipe.servings,
-      cookingTime: recipe.cooking_time,
-      //Following key/value is specific to this project and doesnt come from API
-      bookmarked: false,
-    };
+    state.recipe = recipeObject(recipe)
     //if a recipe is already bookmarked
     if (state.bookmarks.some(recipe => recipe.id === id))
       state.recipe.bookmarked = true;
@@ -87,6 +77,7 @@ const updateBookmarkListInLocalStorage = function () {
 const clearBookmarks = function () {
   localStorage.clear('bookmarks');
 };
+//clearBookmarks();
 
 export const getNewServings = function (newServings) {
   //Updating the change in quantity
@@ -149,7 +140,6 @@ export const uploadRecipe = async function (newRecipe) {
         return { quantity: quantity ? +quantity : null, unit, description };
       });
     
-    console.log(ingredients);
     const recipeToUpload = {
       publisher: newRecipe.publisher,
       source_url: newRecipe.sourceUrl,
@@ -159,7 +149,12 @@ export const uploadRecipe = async function (newRecipe) {
       servings: newRecipe.servings,
       ingredients
     }
-    console.log(recipeToUpload);
+    const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipeToUpload);
+
+    const { recipe } = data.data;
+    state.recipe = recipeObject(recipe);
+    addBookmark(state.recipe);
+    
   } catch (err) {
     throw err;
   }
