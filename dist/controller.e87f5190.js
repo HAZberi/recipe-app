@@ -970,7 +970,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 // https://forkify-api.herokuapp.com/v2
-// APIKEY = 9222b988-7d5e-4f74-8033-893570dc4c4d
+// APIKEY = 6d3db235-e538-465d-a436-f128c640bd9a
 var state = {
   recipe: {},
   search: {
@@ -1006,6 +1006,7 @@ var getRecipe = /*#__PURE__*/function () {
               title: recipe.title,
               servings: recipe.servings,
               cookingTime: recipe.cooking_time,
+              //Following key/value is specific to this project and doesnt come from API
               bookmarked: false
             }; //if a recipe is already bookmarked
 
@@ -2083,7 +2084,127 @@ var BookmarksView = /*#__PURE__*/function (_View) {
 var _default = new BookmarksView();
 
 exports.default = _default;
-},{"./View.js":"src/js/views/View.js","./recipePreview.js":"src/js/views/recipePreview.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
+},{"./View.js":"src/js/views/View.js","./recipePreview.js":"src/js/views/recipePreview.js"}],"src/js/views/addRecipeView.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _View2 = _interopRequireDefault(require("./View.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var AddRecipeView = /*#__PURE__*/function (_View) {
+  _inherits(AddRecipeView, _View);
+
+  var _super = _createSuper(AddRecipeView);
+
+  function AddRecipeView() {
+    var _this;
+
+    _classCallCheck(this, AddRecipeView);
+
+    _this = _super.call(this); //Listen for open and close event right at initialization
+
+    _defineProperty(_assertThisInitialized(_this), "_parentElement", document.querySelector('.upload'));
+
+    _defineProperty(_assertThisInitialized(_this), "_window", document.querySelector('.add-recipe-window'));
+
+    _defineProperty(_assertThisInitialized(_this), "_overlay", document.querySelector('.overlay'));
+
+    _defineProperty(_assertThisInitialized(_this), "_btnOpen", document.querySelector('.nav__btn--add-recipe'));
+
+    _defineProperty(_assertThisInitialized(_this), "_btnClose", document.querySelector('.btn--close-modal'));
+
+    _defineProperty(_assertThisInitialized(_this), "_btnUpload", document.querySelector('.upload__btn'));
+
+    _this._showModalWindowListener();
+
+    _this._hideModalWindowListener();
+
+    return _this;
+  }
+
+  _createClass(AddRecipeView, [{
+    key: "_toggleHiddenElements",
+    value: function _toggleHiddenElements() {
+      this._window.classList.toggle('hidden');
+
+      this._overlay.classList.toggle('hidden');
+    }
+  }, {
+    key: "_showModalWindowListener",
+    value: function _showModalWindowListener() {
+      this._btnOpen.addEventListener('click', this._toggleHiddenElements.bind(this));
+    }
+  }, {
+    key: "_hideModalWindowListener",
+    value: function _hideModalWindowListener() {
+      var _this2 = this;
+
+      [this._btnClose, this._overlay, this._btnUpload].forEach(function (el) {
+        return el.addEventListener('click', _this2._toggleHiddenElements.bind(_this2));
+      });
+    }
+  }, {
+    key: "submitRecipeListener",
+    value: function submitRecipeListener(getNewlyAddedRecipe) {
+      var _this3 = this;
+
+      this._parentElement.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var getData = new FormData(_this3._parentElement);
+        var dataObject = Object.fromEntries(_toConsumableArray(getData));
+        getNewlyAddedRecipe(dataObject);
+      });
+    }
+  }]);
+
+  return AddRecipeView;
+}(_View2.default);
+
+var _default = new AddRecipeView();
+
+exports.default = _default;
+},{"./View.js":"src/js/views/View.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
 var global = arguments[3];
 var check = function (it) {
   return it && it.Math == Math && it;
@@ -13430,6 +13551,8 @@ var _paginationView = _interopRequireDefault(require("./views/paginationView.js"
 
 var _bookmarksView = _interopRequireDefault(require("./views/bookmarksView.js"));
 
+var _addRecipeView = _interopRequireDefault(require("./views/addRecipeView.js"));
+
 require("regenerator-runtime/runtime");
 
 require("core-js/stable");
@@ -13591,6 +13714,11 @@ var showBookmarksFromStorage = function showBookmarksFromStorage() {
   _bookmarksView.default.render(model.state);
 };
 
+var getNewlyAddedRecipe = function getNewlyAddedRecipe(newRecipe) {
+  console.log("Called");
+  console.log(newRecipe);
+};
+
 var init = function init() {
   //Following Bookmark handler has side-effects! It must be called 1st 
   //Recipes will be loaded in view from bookmarks at window reload
@@ -13601,16 +13729,18 @@ var init = function init() {
 
   _recipeView.default.handleServingsListener(changeServings);
 
-  _recipeView.default.handleBookmarkListener(controlBookmarks); //Search and Pagination doesn't need to be in order
+  _recipeView.default.handleBookmarkListener(controlBookmarks); //Search Pagination and AddRecipe Action doesn't need to be in order
 
 
   _searchView.default.handleEventListener(showSearchResults);
 
   _paginationView.default.handleEventListener(movePagination);
+
+  _addRecipeView.default.submitRecipeListener(getNewlyAddedRecipe);
 };
 
 init();
-},{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultsView.js":"src/js/views/resultsView.js","./views/paginationView.js":"src/js/views/paginationView.js","./views/bookmarksView.js":"src/js/views/bookmarksView.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","core-js/stable":"node_modules/core-js/stable/index.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./model.js":"src/js/model.js","./views/recipeView.js":"src/js/views/recipeView.js","./views/searchView.js":"src/js/views/searchView.js","./views/resultsView.js":"src/js/views/resultsView.js","./views/paginationView.js":"src/js/views/paginationView.js","./views/bookmarksView.js":"src/js/views/bookmarksView.js","./views/addRecipeView.js":"src/js/views/addRecipeView.js","regenerator-runtime/runtime":"node_modules/regenerator-runtime/runtime.js","core-js/stable":"node_modules/core-js/stable/index.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

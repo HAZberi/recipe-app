@@ -2,7 +2,8 @@ import { async } from 'regenerator-runtime';
 import { API_URL, RESULTS_PER_PAGE } from './config';
 import { getJSON } from './helper.js';
 // https://forkify-api.herokuapp.com/v2
-// APIKEY = 9222b988-7d5e-4f74-8033-893570dc4c4d
+// APIKEY = 6d3db235-e538-465d-a436-f128c640bd9a
+
 export const state = {
   recipe: {},
   search: {
@@ -28,6 +29,7 @@ export const getRecipe = async function (id) {
       title: recipe.title,
       servings: recipe.servings,
       cookingTime: recipe.cooking_time,
+      //Following key/value is specific to this project and doesnt come from API
       bookmarked: false,
     };
     //if a recipe is already bookmarked

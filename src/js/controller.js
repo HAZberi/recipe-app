@@ -4,6 +4,7 @@ import SearchView from './views/searchView.js';
 import ResultsView from './views/resultsView.js';
 import PaginationView from './views/paginationView.js';
 import BookmarksView from "./views/bookmarksView.js";
+import AddRecipeView from "./views/addRecipeView.js";
 
 //Polyfilling Imports
 import 'regenerator-runtime/runtime';
@@ -83,6 +84,12 @@ const showBookmarksFromStorage = function(){
   BookmarksView.render(model.state);
 }
 
+const getNewlyAddedRecipe = function(newRecipe){
+  console.log("Called");
+  console.log(newRecipe);
+}
+
+
 const init = function () {
   //Following Bookmark handler has side-effects! It must be called 1st 
   //Recipes will be loaded in view from bookmarks at window reload
@@ -91,9 +98,11 @@ const init = function () {
   RecipeView.handleEventListeners(showRecipe);
   RecipeView.handleServingsListener(changeServings);
   RecipeView.handleBookmarkListener(controlBookmarks);
-  //Search and Pagination doesn't need to be in order
+  //Search Pagination and AddRecipe Action doesn't need to be in order
   SearchView.handleEventListener(showSearchResults);
   PaginationView.handleEventListener(movePagination);
+  AddRecipeView.submitRecipeListener(getNewlyAddedRecipe);
+
 };
 
 
