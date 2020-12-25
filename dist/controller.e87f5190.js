@@ -1039,7 +1039,9 @@ var addBookmark = function addBookmark(recipe) {
   //Add recipe in bookmarks
   state.bookmarks.push(recipe); //Update the bookmark status on recipe
 
-  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true; //Update the local Storage
+
+  updateBookmarkListInLocalStorage();
 };
 
 exports.addBookmark = addBookmark;
@@ -1051,10 +1053,18 @@ var deleteBookmark = function deleteBookmark(recipe) {
   });
   state.bookmarks.splice(deleteLocation, 1); //Update the bookmark status on recipe
 
-  if (recipe.id === state.recipe.id) state.recipe.bookmarked = false;
-};
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = false; //Update the local Storage
+
+  updateBookmarkListInLocalStorage();
+}; //helper function to get the data from state and store
+//Note: This function has side effects
+
 
 exports.deleteBookmark = deleteBookmark;
+
+var updateBookmarkListInLocalStorage = function updateBookmarkListInLocalStorage() {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
 
 var getNewServings = function getNewServings(newServings) {
   //Updating the change in quantity
@@ -1112,7 +1122,9 @@ var getSearchResults = /*#__PURE__*/function () {
   return function getSearchResults(_x2) {
     return _ref2.apply(this, arguments);
   };
-}();
+}(); //This is a helper function to manipulate state
+//Note: This function has side effects
+
 
 exports.getSearchResults = getSearchResults;
 
@@ -1126,9 +1138,20 @@ var getSearchResultsPerPage = function getSearchResultsPerPage() {
   var start = (page - 1) * state.search.resultsPerPage;
   var end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
-};
+}; //A initialization function to get the data from local storage
+
 
 exports.getSearchResultsPerPage = getSearchResultsPerPage;
+
+var init = function init() {
+  //get data from storage
+  var bookmarks = JSON.parse(localStorage.getItem('bookmarks')); //if bookmarks exist in storage - update the state
+
+  if (bookmarks) state.bookmarks = bookmarks;
+}; //
+
+
+init();
 },{"regenerator-runtime":"node_modules/regenerator-runtime/runtime.js","./config":"src/js/config.js","./helper.js":"src/js/helper.js"}],"src/img/icons.svg":[function(require,module,exports) {
 module.exports = "/icons.ae3c38d5.svg";
 },{}],"node_modules/fractional/index.js":[function(require,module,exports) {
@@ -2046,6 +2069,11 @@ var BookmarksView = /*#__PURE__*/function (_View) {
       var bookmarks = _ref.bookmarks;
       var markup = bookmarks.map(_recipePreview.default).join('');
       return markup;
+    }
+  }, {
+    key: "handleStorageBookmarks",
+    value: function handleStorageBookmarks(showBookmarksFromStorage) {
+      window.addEventListener('load', showBookmarksFromStorage);
     }
   }]);
 
@@ -13559,12 +13587,22 @@ var controlBookmarks = function controlBookmarks(recipe) {
   _bookmarksView.default.render(model.state);
 };
 
+var showBookmarksFromStorage = function showBookmarksFromStorage() {
+  _bookmarksView.default.render(model.state);
+};
+
 var init = function init() {
+  //Following Bookmark handler has side-effects! It must be called 1st 
+  //Recipes will be loaded in view from bookmarks at window reload
+  _bookmarksView.default.handleStorageBookmarks(showBookmarksFromStorage); //Recipe View handlers will be initiated 2nd
+
+
   _recipeView.default.handleEventListeners(showRecipe);
 
   _recipeView.default.handleServingsListener(changeServings);
 
-  _recipeView.default.handleBookmarkListener(controlBookmarks);
+  _recipeView.default.handleBookmarkListener(controlBookmarks); //Search and Pagination doesn't need to be in order
+
 
   _searchView.default.handleEventListener(showSearchResults);
 
@@ -13600,7 +13638,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59985" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52135" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

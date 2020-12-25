@@ -79,11 +79,19 @@ const controlBookmarks = function(recipe){
   BookmarksView.render(model.state);
 }
 
+const showBookmarksFromStorage = function(){
+  BookmarksView.render(model.state);
+}
 
 const init = function () {
+  //Following Bookmark handler has side-effects! It must be called 1st 
+  //Recipes will be loaded in view from bookmarks at window reload
+  BookmarksView.handleStorageBookmarks(showBookmarksFromStorage);
+  //Recipe View handlers will be initiated 2nd
   RecipeView.handleEventListeners(showRecipe);
   RecipeView.handleServingsListener(changeServings);
   RecipeView.handleBookmarkListener(controlBookmarks);
+  //Search and Pagination doesn't need to be in order
   SearchView.handleEventListener(showSearchResults);
   PaginationView.handleEventListener(movePagination);
 };

@@ -8,6 +8,9 @@ class BookmarksView extends View {
     const markup = bookmarks.map(RecipePreview).join('');
     return markup;
   }
+  handleStorageBookmarks(showBookmarksFromStorage){
+    window.addEventListener('load', showBookmarksFromStorage);
+  }
 }
 
 export default new BookmarksView();

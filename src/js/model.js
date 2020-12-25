@@ -43,6 +43,8 @@ export const addBookmark = function (recipe) {
   state.bookmarks.push(recipe);
   //Update the bookmark status on recipe
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+  //Update the local Storage
+  updateBookmarkListInLocalStorage();
 };
 
 export const deleteBookmark = function (recipe) {
@@ -53,7 +55,17 @@ export const deleteBookmark = function (recipe) {
   state.bookmarks.splice(deleteLocation, 1);
   //Update the bookmark status on recipe
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = false;
+  //Update the local Storage
+  updateBookmarkListInLocalStorage();
 };
+
+//helper function to get the data from state and store
+//Note: This function has side effects
+const updateBookmarkListInLocalStorage = function (){
+
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+
+}
 
 export const getNewServings = function (newServings) {
   //Updating the change in quantity
@@ -86,6 +98,8 @@ export const getSearchResults = async function (query) {
   }
 };
 
+//This is a helper function to manipulate state
+//Note: This function has side effects
 const setCurrentPage = function (page) {
   state.search.currentPage = page;
 };
@@ -98,3 +112,17 @@ export const getSearchResultsPerPage = function (
   const end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
 };
+
+//A initialization function to get the data from local storage
+const init = () => {
+  //get data from storage
+  const bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+  //if bookmarks exist in storage - update the state
+  if(bookmarks) state.bookmarks = bookmarks;
+}
+
+//
+
+
+
+init();
