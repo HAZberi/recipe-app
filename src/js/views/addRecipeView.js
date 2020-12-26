@@ -9,8 +9,9 @@ class AddRecipeView extends View {
   _btnOpen = document.querySelector('.nav__btn--add-recipe');
   _btnClose = document.querySelector('.btn--close-modal');
   _btnUpload = document.querySelector('.upload__btn');
-  _errorMessage = "Recipe cannot be added. Please refresh and try again. Sorry for inconvenience!"
-  _message = "Recipe has been sucessfully uploaded";
+  _errorMessage =
+    'Recipe cannot be added. Please refresh and try again. Sorry for inconvenience!';
+  _message = 'Recipe has been sucessfully uploaded';
   constructor() {
     super();
     //Listen for open and close event right at initialization
@@ -18,27 +19,44 @@ class AddRecipeView extends View {
     this._hideModalWindowListener();
   }
 
-  toggleHiddenElements() {
+  _toggleHiddenElements() {
     this._window.classList.toggle('hidden');
     this._overlay.classList.toggle('hidden');
-    setTimeout(()=>{
-      if(this._window.classList.contains('hidden')){
+    this._formReset();
+  }
+
+  _formReset() {
+    if (this._window.classList.contains('hidden')) {
+      setTimeout(() => {
         const markup = this._generateMarkup();
         this._clearAndInsert(markup);
-      }
-    }, MODAL_WINDOW_ANIMATION_TIMEOUT * 1000)
+        console.log('In set timeout All');
+      }, MODAL_WINDOW_ANIMATION_TIMEOUT * 1000);
+    }
   }
+  closeModalAfterTimeOut() {
+    if (
+      this._window.classList.contains('hidden') ||
+      document.querySelector('.upload__heading')
+    )
+      return;
+    this._window.classList.add('hidden');
+    this._overlay.classList.add('hidden');
+    this._formReset();
+  }
+
   _showModalWindowListener() {
     this._btnOpen.addEventListener(
       'click',
-      this.toggleHiddenElements.bind(this)
+      this._toggleHiddenElements.bind(this)
     );
   }
   _hideModalWindowListener() {
     [this._btnClose, this._overlay].forEach(el =>
-      el.addEventListener('click', this.toggleHiddenElements.bind(this))
+      el.addEventListener('click', this._toggleHiddenElements.bind(this))
     );
   }
+
   submitRecipeListener(uploadNewRecipe) {
     this._parentElement.addEventListener('submit', e => {
       e.preventDefault();
@@ -47,7 +65,7 @@ class AddRecipeView extends View {
       uploadNewRecipe(dataObject);
     });
   }
-  _generateMarkup(){
+  _generateMarkup() {
     return `
         <form class="upload">
         <div class="upload__column">
@@ -80,6 +98,7 @@ class AddRecipeView extends View {
           <input
             value=""
             type="text"
+            required
             name="ingredient-2"
             placeholder="Format: 'Quantity, Unit, Description'"
           />
@@ -87,6 +106,7 @@ class AddRecipeView extends View {
           <input
             value=""
             type="text"
+            required
             name="ingredient-3"
             placeholder="Format: 'Quantity, Unit, Description'"
           />
@@ -116,9 +136,8 @@ class AddRecipeView extends View {
           </svg>
           <span>Upload</span>
         </button>
-      </form>`
+      </form>`;
   }
 }
 
 export default new AddRecipeView();
-

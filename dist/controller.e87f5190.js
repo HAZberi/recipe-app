@@ -883,7 +883,7 @@ var RESULTS_PER_PAGE = 10;
 exports.RESULTS_PER_PAGE = RESULTS_PER_PAGE;
 var API_KEY = "6d3db235-e538-465d-a436-f128c640bd9a";
 exports.API_KEY = API_KEY;
-var MODAL_WINDOW_TIMEOUT = 5;
+var MODAL_WINDOW_TIMEOUT = 7;
 exports.MODAL_WINDOW_TIMEOUT = MODAL_WINDOW_TIMEOUT;
 var MODAL_WINDOW_ANIMATION_TIMEOUT = 0.75;
 exports.MODAL_WINDOW_ANIMATION_TIMEOUT = MODAL_WINDOW_ANIMATION_TIMEOUT;
@@ -1249,7 +1249,7 @@ var uploadRecipe = /*#__PURE__*/function () {
             }).map(function (e) {
               return e[1].split(',');
             }).map(function (ing) {
-              if (ing.length !== 3) throw new Error('Wrong Format!! Ingredients must be entered as following "Quantity, Unit, Description" ');
+              if (ing.length !== 3 || ing[2] === '') throw new Error('Wrong Format!! Ingredients must be entered as following: "Quantity, Unit, Description" \n Specifying Description is also required. ');
 
               var _ing = _slicedToArray(ing, 3),
                   quantity = _ing[0],
@@ -2331,9 +2331,9 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
 
     _defineProperty(_assertThisInitialized(_this), "_btnUpload", document.querySelector('.upload__btn'));
 
-    _defineProperty(_assertThisInitialized(_this), "_errorMessage", "Recipe cannot be added. Please refresh and try again. Sorry for inconvenience!");
+    _defineProperty(_assertThisInitialized(_this), "_errorMessage", 'Recipe cannot be added. Please refresh and try again. Sorry for inconvenience!');
 
-    _defineProperty(_assertThisInitialized(_this), "_message", "Recipe has been sucessfully uploaded");
+    _defineProperty(_assertThisInitialized(_this), "_message", 'Recipe has been sucessfully uploaded');
 
     _this._showModalWindowListener();
 
@@ -2343,26 +2343,44 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
   }
 
   _createClass(AddRecipeView, [{
-    key: "toggleHiddenElements",
-    value: function toggleHiddenElements() {
-      var _this2 = this;
-
+    key: "_toggleHiddenElements",
+    value: function _toggleHiddenElements() {
       this._window.classList.toggle('hidden');
 
       this._overlay.classList.toggle('hidden');
 
-      setTimeout(function () {
-        if (_this2._window.classList.contains('hidden')) {
+      this._formReset();
+    }
+  }, {
+    key: "_formReset",
+    value: function _formReset() {
+      var _this2 = this;
+
+      if (this._window.classList.contains('hidden')) {
+        setTimeout(function () {
           var markup = _this2._generateMarkup();
 
           _this2._clearAndInsert(markup);
-        }
-      }, _config.MODAL_WINDOW_ANIMATION_TIMEOUT * 1000);
+
+          console.log('In set timeout All');
+        }, _config.MODAL_WINDOW_ANIMATION_TIMEOUT * 1000);
+      }
+    }
+  }, {
+    key: "closeModalAfterTimeOut",
+    value: function closeModalAfterTimeOut() {
+      if (this._window.classList.contains('hidden') || document.querySelector('.upload__heading')) return;
+
+      this._window.classList.add('hidden');
+
+      this._overlay.classList.add('hidden');
+
+      this._formReset();
     }
   }, {
     key: "_showModalWindowListener",
     value: function _showModalWindowListener() {
-      this._btnOpen.addEventListener('click', this.toggleHiddenElements.bind(this));
+      this._btnOpen.addEventListener('click', this._toggleHiddenElements.bind(this));
     }
   }, {
     key: "_hideModalWindowListener",
@@ -2370,7 +2388,7 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
       var _this3 = this;
 
       [this._btnClose, this._overlay].forEach(function (el) {
-        return el.addEventListener('click', _this3.toggleHiddenElements.bind(_this3));
+        return el.addEventListener('click', _this3._toggleHiddenElements.bind(_this3));
       });
     }
   }, {
@@ -2388,7 +2406,7 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
   }, {
     key: "_generateMarkup",
     value: function _generateMarkup() {
-      return "\n        <form class=\"upload\">\n        <div class=\"upload__column\">\n          <h3 class=\"upload__heading\">Recipe data</h3>\n          <label>Title</label>\n          <input value=\"\" required name=\"title\" type=\"text\" />\n          <label>URL</label>\n          <input value=\"\" required name=\"sourceUrl\" type=\"text\" />\n          <label>Image URL</label>\n          <input value=\"\" required name=\"imageUrl\" type=\"text\" />\n          <label>Publisher</label>\n          <input value=\"\" required name=\"publisher\" type=\"text\" />\n          <label>Prep time</label>\n          <input value=\"\" required name=\"cookingTime\" type=\"number\" />\n          <label>Servings</label>\n          <input value=\"\" required name=\"servings\" type=\"number\" />\n        </div>\n\n        <div class=\"upload__column\">\n          <h3 class=\"upload__heading\">Ingredients</h3>\n          <label>Ingredient 1</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            required\n            name=\"ingredient-1\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 2</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            name=\"ingredient-2\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 3</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            name=\"ingredient-3\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 4</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-4\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 5</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-5\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 6</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-6\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n        </div>\n\n        <button class=\"btn upload__btn\">\n          <svg>\n            <use href=\"".concat(_icons.default, "#icon-upload-cloud\"></use>\n          </svg>\n          <span>Upload</span>\n        </button>\n      </form>");
+      return "\n        <form class=\"upload\">\n        <div class=\"upload__column\">\n          <h3 class=\"upload__heading\">Recipe data</h3>\n          <label>Title</label>\n          <input value=\"\" required name=\"title\" type=\"text\" />\n          <label>URL</label>\n          <input value=\"\" required name=\"sourceUrl\" type=\"text\" />\n          <label>Image URL</label>\n          <input value=\"\" required name=\"imageUrl\" type=\"text\" />\n          <label>Publisher</label>\n          <input value=\"\" required name=\"publisher\" type=\"text\" />\n          <label>Prep time</label>\n          <input value=\"\" required name=\"cookingTime\" type=\"number\" />\n          <label>Servings</label>\n          <input value=\"\" required name=\"servings\" type=\"number\" />\n        </div>\n\n        <div class=\"upload__column\">\n          <h3 class=\"upload__heading\">Ingredients</h3>\n          <label>Ingredient 1</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            required\n            name=\"ingredient-1\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 2</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            required\n            name=\"ingredient-2\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 3</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            required\n            name=\"ingredient-3\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 4</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-4\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 5</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-5\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 6</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-6\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n        </div>\n\n        <button class=\"btn upload__btn\">\n          <svg>\n            <use href=\"".concat(_icons.default, "#icon-upload-cloud\"></use>\n          </svg>\n          <span>Upload</span>\n        </button>\n      </form>");
     }
   }]);
 
@@ -13931,11 +13949,12 @@ var uploadNewRecipe = /*#__PURE__*/function () {
 
           case 4:
             //close window
-            console.log("I am getting executed");
             closeModalWindow(_addRecipeView.default.renderMessage); //Render the uploaded Recipe
 
-            _recipeView.default.render(model.state); //Re-render the Bookmarks List
+            _recipeView.default.render(model.state); //push the new id in url
 
+
+            window.history.pushState(null, '', "#".concat(model.state.recipe.id)); //Re-render the Bookmarks List
 
             _bookmarksView.default.render(model.state);
 
@@ -13966,7 +13985,7 @@ var closeModalWindow = function closeModalWindow(callback, message) {
   setTimeout(function () {
     console.log('in time out');
 
-    _addRecipeView.default.toggleHiddenElements();
+    _addRecipeView.default.closeModalAfterTimeOut();
   }, _config.MODAL_WINDOW_TIMEOUT * 1000);
 };
 

@@ -132,9 +132,9 @@ export const uploadRecipe = async function (newRecipe) {
       .filter(e => e[0].startsWith('ingredient') && e[1] !== '')
       .map(e => e[1].split(','))
       .map(ing => {
-        if (ing.length !== 3)
+        if (ing.length !== 3 || ing[2] === '')
           throw new Error(
-            'Wrong Format!! Ingredients must be entered as following "Quantity, Unit, Description" '
+            'Wrong Format!! Ingredients must be entered as following: "Quantity, Unit, Description" \n Specifying Description is also required. '
           );
 
         const [quantity, unit, description] = ing;
