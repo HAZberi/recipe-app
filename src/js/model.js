@@ -34,7 +34,7 @@ const recipeObject = function(recipe){
 
 export const getRecipe = async function (id) {
   try {
-    const data = await getJSON(`${API_URL}${id}`);
+    const data = await getJSON(`${API_URL}${id}?key=${API_KEY}`);
 
     const { recipe } = data.data;
     state.recipe = recipeObject(recipe)
@@ -93,7 +93,7 @@ export const getNewServings = function (newServings) {
 export const getSearchResults = async function (query) {
   try {
     state.search.query = query;
-    const data = await getJSON(`${API_URL}?search=${query}`);
+    const data = await getJSON(`${API_URL}?search=${query}&key=${API_KEY}`);
     const { recipes } = data.data;
     state.search.results = recipes.map(recipe => {
       return {
@@ -101,6 +101,7 @@ export const getSearchResults = async function (query) {
         publisher: recipe.publisher,
         imageUrl: recipe.image_url,
         title: recipe.title,
+        ...(recipe.key && {key: recipe.key}),
       };
     });
     //always show the 1st page whenever user triggers a search
@@ -149,12 +150,14 @@ export const uploadRecipe = async function (newRecipe) {
       servings: newRecipe.servings,
       ingredients
     }
+    //Send data to the API
     const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipeToUpload);
-
+    //Recieve uploaded data and parse it
     const { recipe } = data.data;
+    //Update the state with the recently uploaded recipe
     state.recipe = recipeObject(recipe);
+    //add the recently uploaded recipe to bookmarks
     addBookmark(state.recipe);
-    
   } catch (err) {
     throw err;
   }

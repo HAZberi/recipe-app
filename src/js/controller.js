@@ -26,7 +26,8 @@ const showRecipe = async function () {
     //Adding a spinner while we wait for the API to fetch
     RecipeView.loadingSpinner();
     //Update Search Results and Bookmark list to mark the selected recipe
-    ResultsView.update(model.getSearchResultsPerPage());
+    if (model.getSearchResultsPerPage().length > 0)
+      ResultsView.update(model.getSearchResultsPerPage());
     BookmarksView.update(model.state);
     //STEP 1 Fetching the recipe
     await model.getRecipe(id);
@@ -82,9 +83,9 @@ const controlBookmarks = function (recipe) {
 };
 
 const showBookmarksFromStorage = function () {
-  try{
+  try {
     BookmarksView.render(model.state);
-  }catch(err){
+  } catch (err) {
     BookmarksView.renderMessage();
   }
 };
@@ -95,8 +96,12 @@ const uploadNewRecipe = async function (newRecipe) {
     AddRecipeView.loadingSpinner();
     //Upload a new Recipe
     await model.uploadRecipe(newRecipe);
+    //close window
+    closeModalWindow(AddRecipeView.renderMessage);
     //Render the uploaded Recipe
     RecipeView.render(model.state);
+    //Re-render the Bookmarks List
+    BookmarksView.render(model.state);
   } catch (err) {
     console.error(err);
     closeModalWindow(AddRecipeView.renderError, err.message);

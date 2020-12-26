@@ -3,32 +3,33 @@
 import icons from '../../img/icons.svg'; // Parcel 1 still works
 //Fractional is a library to convert decimal places to fractions
 import { Fraction } from 'fractional';
-import View from "./View.js";
+import View from './View.js';
 
-class RecipeView extends View{
+class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
-  _errorMessage = "Recipe not found. Please search for something else or try again."
-  _message = "Start by searching for a recipe or an ingredient. Have fun!";
-  handleEventListeners(showRecipe){
+  _errorMessage =
+    'Recipe not found. Please search for something else or try again.';
+  _message = 'Start by searching for a recipe or an ingredient. Have fun!';
+  handleEventListeners(showRecipe) {
     ['hashchange', 'load'].forEach(eventType =>
-        window.addEventListener(eventType, showRecipe)
-      );
+      window.addEventListener(eventType, showRecipe)
+    );
   }
 
-  handleServingsListener(changeServings){
-    this._parentElement.addEventListener("click", (e)=>{
+  handleServingsListener(changeServings) {
+    this._parentElement.addEventListener('click', e => {
       const changeBtn = e.target.closest('.btn--tiny');
-      if(!changeBtn) return
+      if (!changeBtn) return;
       const newServings = +changeBtn.dataset.updateTo;
-      if(newServings < 1) return
+      if (newServings < 1) return;
       changeServings(newServings);
     });
   }
 
-  handleBookmarkListener(bookmarker){
-    this._parentElement.addEventListener("click", (e)=>{
-      const bookmarkBtn = e.target.closest(".my-bookmark");
-      if(!bookmarkBtn) return;
+  handleBookmarkListener(bookmarker) {
+    this._parentElement.addEventListener('click', e => {
+      const bookmarkBtn = e.target.closest('.my-bookmark');
+      if (!bookmarkBtn) return;
       bookmarker(this._data.recipe);
     });
   }
@@ -86,12 +87,16 @@ class RecipeView extends View{
             <span class="recipe__info-text">servings</span>
 
             <div class="recipe__info-buttons">
-              <button class="btn--tiny btn--increase-servings" data-update-to="${recipe.servings - 1}">
+              <button class="btn--tiny btn--increase-servings" data-update-to="${
+                recipe.servings - 1
+              }">
                 <svg>
                   <use href="${icons}#icon-minus-circle"></use>
                 </svg>
               </button>
-              <button class="btn--tiny btn--increase-servings" data-update-to="${recipe.servings + 1}">
+              <button class="btn--tiny btn--increase-servings" data-update-to="${
+                recipe.servings + 1
+              }">
                 <svg>
                   <use href="${icons}#icon-plus-circle"></use>
                 </svg>
@@ -99,14 +104,18 @@ class RecipeView extends View{
             </div>
           </div>
 
-          <div class="recipe__user-generated">
-            <svg>
-              <use href="${icons}#icon-user"></use>
-            </svg>
-          </div>
+          ${
+            recipe.key
+              ? `<div class="recipe__user-generated">
+                  <svg>
+                    <use href="${icons}#icon-user"></use>
+                  </svg>
+                </div>`
+              : ''
+          }
           <button class="btn--round my-bookmark">
             <svg class="">
-              <use href="${icons}#icon-bookmark${recipe.bookmarked ? "-fill" : ""}"></use>
+              <use href="${icons}#icon-bookmark${recipe.bookmarked ? '-fill' : ''}"></use>
             </svg>
           </button>
         </div>
