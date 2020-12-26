@@ -874,7 +874,7 @@ try {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.MODAL_WINDOW_TIMEOUT = exports.API_KEY = exports.RESULTS_PER_PAGE = exports.API_TIMEOUT = exports.API_URL = void 0;
+exports.MODAL_WINDOW_ANIMATION_TIMEOUT = exports.MODAL_WINDOW_TIMEOUT = exports.API_KEY = exports.RESULTS_PER_PAGE = exports.API_TIMEOUT = exports.API_URL = void 0;
 var API_URL = "https://forkify-api.herokuapp.com/api/v2/recipes/";
 exports.API_URL = API_URL;
 var API_TIMEOUT = 10;
@@ -885,6 +885,8 @@ var API_KEY = "6d3db235-e538-465d-a436-f128c640bd9a";
 exports.API_KEY = API_KEY;
 var MODAL_WINDOW_TIMEOUT = 5;
 exports.MODAL_WINDOW_TIMEOUT = MODAL_WINDOW_TIMEOUT;
+var MODAL_WINDOW_ANIMATION_TIMEOUT = 0.75;
+exports.MODAL_WINDOW_ANIMATION_TIMEOUT = MODAL_WINDOW_ANIMATION_TIMEOUT;
 },{}],"src/js/helper.js":[function(require,module,exports) {
 "use strict";
 
@@ -1902,7 +1904,7 @@ var RecipeView = /*#__PURE__*/function (_View) {
     key: "_generateMarkup",
     value: function _generateMarkup(_ref2) {
       var recipe = _ref2.recipe;
-      return " \n        <figure class=\"recipe__fig\">\n          <img src=".concat(recipe.imageUrl, " alt=\"Tomato\" class=\"recipe__img\" />\n          <h1 class=\"recipe__title\">\n            <span>").concat(recipe.title, "</span>\n          </h1>\n        </figure>\n\n        <div class=\"recipe__details\">\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-clock\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--minutes\">").concat(recipe.cookingTime, "</span>\n            <span class=\"recipe__info-text\">minutes</span>\n          </div>\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-users\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--people\">").concat(recipe.servings, "</span>\n            <span class=\"recipe__info-text\">servings</span>\n\n            <div class=\"recipe__info-buttons\">\n              <button class=\"btn--tiny btn--increase-servings\" data-update-to=\"").concat(recipe.servings - 1, "\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-minus-circle\"></use>\n                </svg>\n              </button>\n              <button class=\"btn--tiny btn--increase-servings\" data-update-to=\"").concat(recipe.servings + 1, "\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-plus-circle\"></use>\n                </svg>\n              </button>\n            </div>\n          </div>\n\n          ").concat(recipe.key ? "<div class=\"recipe__user-generated\">\n                  <svg>\n                    <use href=\"".concat(_icons.default, "#icon-user\"></use>\n                  </svg>\n                </div>") : '', "\n          <button class=\"btn--round my-bookmark\">\n            <svg class=\"\">\n              <use href=\"").concat(_icons.default, "#icon-bookmark").concat(recipe.bookmarked ? '-fill' : '', "\"></use>\n            </svg>\n          </button>\n        </div>\n\n        <div class=\"recipe__ingredients\">\n          <h2 class=\"heading--2\">Recipe ingredients</h2>\n          <ul class=\"recipe__ingredient-list\">\n          ").concat(this._generateListOfIngridentsMarkup(recipe), "\n          </ul>\n        </div>\n\n        <div class=\"recipe__directions\">\n          <h2 class=\"heading--2\">How to cook it</h2>\n          <p class=\"recipe__directions-text\">\n            This recipe was carefully designed and tested by\n            <span class=\"recipe__publisher\">").concat(recipe.publisher, "</span>. Please check out\n            directions at their website.\n          </p>\n          <a\n            class=\"btn--small recipe__btn\"\n            href=").concat(recipe.sourceUrl, "\n            target=\"_blank\"\n          >\n            <span>Directions</span>\n            <svg class=\"search__icon\">\n              <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n            </svg>\n          </a>\n        </div>\n        ");
+      return " \n        <figure class=\"recipe__fig\">\n          <img src=".concat(recipe.imageUrl, " alt=\"Tomato\" class=\"recipe__img\" />\n          <h1 class=\"recipe__title\">\n            <span>").concat(recipe.title, "</span>\n          </h1>\n        </figure>\n\n        <div class=\"recipe__details\">\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-clock\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--minutes\">").concat(recipe.cookingTime, "</span>\n            <span class=\"recipe__info-text\">minutes</span>\n          </div>\n          <div class=\"recipe__info\">\n            <svg class=\"recipe__info-icon\">\n              <use href=\"").concat(_icons.default, "#icon-users\"></use>\n            </svg>\n            <span class=\"recipe__info-data recipe__info-data--people\">").concat(recipe.servings, "</span>\n            <span class=\"recipe__info-text\">servings</span>\n\n            <div class=\"recipe__info-buttons\">\n              <button class=\"btn--tiny btn--increase-servings\" data-update-to=\"").concat(recipe.servings - 1, "\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-minus-circle\"></use>\n                </svg>\n              </button>\n              <button class=\"btn--tiny btn--increase-servings\" data-update-to=\"").concat(recipe.servings + 1, "\">\n                <svg>\n                  <use href=\"").concat(_icons.default, "#icon-plus-circle\"></use>\n                </svg>\n              </button>\n            </div>\n          </div>\n          <div class=\"recipe__info-buttons\">\n            ").concat(recipe.key ? "<div class=\"recipe__user-generated\">\n                    <svg>\n                      <use href=\"".concat(_icons.default, "#icon-user\"></use>\n                    </svg>\n                  </div>") : '', "\n            <button class=\"btn--round my-bookmark\">\n              <svg class=\"\">\n                <use href=\"").concat(_icons.default, "#icon-bookmark").concat(recipe.bookmarked ? '-fill' : '', "\"></use>\n              </svg>\n            </button>\n          </div>\n        </div>\n\n        <div class=\"recipe__ingredients\">\n          <h2 class=\"heading--2\">Recipe ingredients</h2>\n          <ul class=\"recipe__ingredient-list\">\n          ").concat(this._generateListOfIngridentsMarkup(recipe), "\n          </ul>\n        </div>\n\n        <div class=\"recipe__directions\">\n          <h2 class=\"heading--2\">How to cook it</h2>\n          <p class=\"recipe__directions-text\">\n            This recipe was carefully designed and tested by\n            <span class=\"recipe__publisher\">").concat(recipe.publisher, "</span>. Please check out\n            directions at their website.\n          </p>\n          <a\n            class=\"btn--small recipe__btn\"\n            href=").concat(recipe.sourceUrl, "\n            target=\"_blank\"\n          >\n            <span>Directions</span>\n            <svg class=\"search__icon\">\n              <use href=\"").concat(_icons.default, "#icon-arrow-right\"></use>\n            </svg>\n          </a>\n        </div>\n        ");
     }
   }]);
 
@@ -2263,6 +2265,10 @@ exports.default = void 0;
 
 var _View2 = _interopRequireDefault(require("./View.js"));
 
+var _icons = _interopRequireDefault(require("../../img/icons.svg"));
+
+var _config = require("../config.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -2339,9 +2345,19 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
   _createClass(AddRecipeView, [{
     key: "toggleHiddenElements",
     value: function toggleHiddenElements() {
+      var _this2 = this;
+
       this._window.classList.toggle('hidden');
 
       this._overlay.classList.toggle('hidden');
+
+      setTimeout(function () {
+        if (_this2._window.classList.contains('hidden')) {
+          var markup = _this2._generateMarkup();
+
+          _this2._clearAndInsert(markup);
+        }
+      }, _config.MODAL_WINDOW_ANIMATION_TIMEOUT * 1000);
     }
   }, {
     key: "_showModalWindowListener",
@@ -2351,23 +2367,28 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
   }, {
     key: "_hideModalWindowListener",
     value: function _hideModalWindowListener() {
-      var _this2 = this;
+      var _this3 = this;
 
       [this._btnClose, this._overlay].forEach(function (el) {
-        return el.addEventListener('click', _this2.toggleHiddenElements.bind(_this2));
+        return el.addEventListener('click', _this3.toggleHiddenElements.bind(_this3));
       });
     }
   }, {
     key: "submitRecipeListener",
     value: function submitRecipeListener(uploadNewRecipe) {
-      var _this3 = this;
+      var _this4 = this;
 
       this._parentElement.addEventListener('submit', function (e) {
         e.preventDefault();
-        var getData = new FormData(_this3._parentElement);
+        var getData = new FormData(_this4._parentElement);
         var dataObject = Object.fromEntries(_toConsumableArray(getData));
         uploadNewRecipe(dataObject);
       });
+    }
+  }, {
+    key: "_generateMarkup",
+    value: function _generateMarkup() {
+      return "\n        <form class=\"upload\">\n        <div class=\"upload__column\">\n          <h3 class=\"upload__heading\">Recipe data</h3>\n          <label>Title</label>\n          <input value=\"\" required name=\"title\" type=\"text\" />\n          <label>URL</label>\n          <input value=\"\" required name=\"sourceUrl\" type=\"text\" />\n          <label>Image URL</label>\n          <input value=\"\" required name=\"imageUrl\" type=\"text\" />\n          <label>Publisher</label>\n          <input value=\"\" required name=\"publisher\" type=\"text\" />\n          <label>Prep time</label>\n          <input value=\"\" required name=\"cookingTime\" type=\"number\" />\n          <label>Servings</label>\n          <input value=\"\" required name=\"servings\" type=\"number\" />\n        </div>\n\n        <div class=\"upload__column\">\n          <h3 class=\"upload__heading\">Ingredients</h3>\n          <label>Ingredient 1</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            required\n            name=\"ingredient-1\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 2</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            name=\"ingredient-2\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 3</label>\n          <input\n            value=\"\"\n            type=\"text\"\n            name=\"ingredient-3\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 4</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-4\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 5</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-5\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n          <label>Ingredient 6</label>\n          <input\n            type=\"text\"\n            name=\"ingredient-6\"\n            placeholder=\"Format: 'Quantity, Unit, Description'\"\n          />\n        </div>\n\n        <button class=\"btn upload__btn\">\n          <svg>\n            <use href=\"".concat(_icons.default, "#icon-upload-cloud\"></use>\n          </svg>\n          <span>Upload</span>\n        </button>\n      </form>");
     }
   }]);
 
@@ -2377,7 +2398,7 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
 var _default = new AddRecipeView();
 
 exports.default = _default;
-},{"./View.js":"src/js/views/View.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
+},{"./View.js":"src/js/views/View.js","../../img/icons.svg":"src/img/icons.svg","../config.js":"src/js/config.js"}],"node_modules/core-js/internals/global.js":[function(require,module,exports) {
 var global = arguments[3];
 var check = function (it) {
   return it && it.Math == Math && it;
@@ -13910,6 +13931,7 @@ var uploadNewRecipe = /*#__PURE__*/function () {
 
           case 4:
             //close window
+            console.log("I am getting executed");
             closeModalWindow(_addRecipeView.default.renderMessage); //Render the uploaded Recipe
 
             _recipeView.default.render(model.state); //Re-render the Bookmarks List
@@ -13917,21 +13939,21 @@ var uploadNewRecipe = /*#__PURE__*/function () {
 
             _bookmarksView.default.render(model.state);
 
-            _context3.next = 13;
+            _context3.next = 14;
             break;
 
-          case 9:
-            _context3.prev = 9;
+          case 10:
+            _context3.prev = 10;
             _context3.t0 = _context3["catch"](0);
             console.error(_context3.t0);
             closeModalWindow(_addRecipeView.default.renderError, _context3.t0.message);
 
-          case 13:
+          case 14:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[0, 9]]);
+    }, _callee3, null, [[0, 10]]);
   }));
 
   return function uploadNewRecipe(_x) {

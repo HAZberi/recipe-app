@@ -132,7 +132,6 @@ body {
   cursor: pointer;
   height: 4.5rem;
   width: 4.5rem;
-  margin-left: auto;
   transition: all 0.2s;
   display: flex;
   align-items: center;
@@ -432,7 +431,7 @@ body {
   width: 3rem;
   border-radius: 1rem;
   margin-left: auto;
-  margin-right: 1.75rem;
+  /* // margin-right: 1.75rem; */
 }
 .preview__user-generated svg {
   height: 1.2rem;
@@ -564,13 +563,19 @@ body {
   height: 4rem;
   width: 4rem;
   border-radius: 10rem;
-  margin-left: auto;
-  margin-right: 1.75rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 .recipe__user-generated svg {
   height: 2.25rem;
   width: 2.25rem;
   fill: #f38e82;
+}
+.recipe__info-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
 }
 .recipe__ingredients {
   padding: 5rem 8rem;

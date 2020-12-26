@@ -109,14 +109,20 @@
     width: 4rem;
     border-radius: 10rem;
 
-    margin-left: auto;
-    margin-right: 1.75rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
 
     svg {
       height: 2.25rem;
       width: 2.25rem;
       fill: $color-primary;
     }
+  }
+  &__info-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
   }
 
   ///////////

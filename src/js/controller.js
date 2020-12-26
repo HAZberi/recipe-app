@@ -97,6 +97,7 @@ const uploadNewRecipe = async function (newRecipe) {
     //Upload a new Recipe
     await model.uploadRecipe(newRecipe);
     //close window
+    console.log("I am getting executed");
     closeModalWindow(AddRecipeView.renderMessage);
     //Render the uploaded Recipe
     RecipeView.render(model.state);

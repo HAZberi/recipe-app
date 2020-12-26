@@ -103,21 +103,22 @@ class RecipeView extends View {
               </button>
             </div>
           </div>
-
-          ${
-            recipe.key
-              ? `<div class="recipe__user-generated">
-                  <svg>
-                    <use href="${icons}#icon-user"></use>
-                  </svg>
-                </div>`
-              : ''
-          }
-          <button class="btn--round my-bookmark">
-            <svg class="">
-              <use href="${icons}#icon-bookmark${recipe.bookmarked ? '-fill' : ''}"></use>
-            </svg>
-          </button>
+          <div class="recipe__info-buttons">
+            ${
+              recipe.key
+                ? `<div class="recipe__user-generated">
+                    <svg>
+                      <use href="${icons}#icon-user"></use>
+                    </svg>
+                  </div>`
+                : ''
+            }
+            <button class="btn--round my-bookmark">
+              <svg class="">
+                <use href="${icons}#icon-bookmark${recipe.bookmarked ? '-fill' : ''}"></use>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="recipe__ingredients">
