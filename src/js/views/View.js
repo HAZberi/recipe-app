@@ -7,13 +7,7 @@ export default class View {
     this.renderMessage = this.renderMessage.bind(this);
   }
   render(data) {
-    console.log(data);
-    if (
-      !data ||
-      (Array.isArray(data.results) &&
-        data.results.length === 0) ||
-        data.bookmarks.length === 0
-    )
+    if (!data)
       throw new Error('No Data Available');
     //The data is coming from state === model -> controller -> view
     this._data = data;

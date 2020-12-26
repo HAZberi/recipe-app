@@ -77,7 +77,7 @@ const updateBookmarkListInLocalStorage = function () {
 const clearBookmarks = function () {
   localStorage.clear('bookmarks');
 };
-//clearBookmarks();
+
 
 export const getNewServings = function (newServings) {
   //Updating the change in quantity
@@ -169,3 +169,4 @@ const init = () => {
 };
 
 init();
+//clearBookmarks();

@@ -1154,8 +1154,7 @@ var updateBookmarkListInLocalStorage = function updateBookmarkListInLocalStorage
 
 var clearBookmarks = function clearBookmarks() {
   localStorage.clear('bookmarks');
-}; //clearBookmarks();
-
+};
 
 var getNewServings = function getNewServings(newServings) {
   //Updating the change in quantity
@@ -1307,7 +1306,7 @@ var init = function init() {
   if (bookmarks) state.bookmarks = bookmarks;
 };
 
-init();
+init(); //clearBookmarks();
 },{"regenerator-runtime":"node_modules/regenerator-runtime/runtime.js","./config":"src/js/config.js","./helper.js":"src/js/helper.js"}],"src/img/icons.svg":[function(require,module,exports) {
 module.exports = "/icons.ae3c38d5.svg";
 },{}],"node_modules/fractional/index.js":[function(require,module,exports) {
@@ -1712,8 +1711,7 @@ var View = /*#__PURE__*/function () {
   _createClass(View, [{
     key: "render",
     value: function render(data) {
-      console.log(data);
-      if (!data || Array.isArray(data.results) && data.results.length === 0 || data.bookmarks.length === 0) throw new Error('No Data Available'); //The data is coming from state === model -> controller -> view
+      if (!data) throw new Error('No Data Available'); //The data is coming from state === model -> controller -> view
 
       this._data = data;
 
@@ -2050,6 +2048,7 @@ var ResultsView = /*#__PURE__*/function (_View) {
   _createClass(ResultsView, [{
     key: "_generateMarkup",
     value: function _generateMarkup(results) {
+      if (Array.isArray(results) && results.length === 0) throw new Error('No Search Results Found');
       var markup = results.map(_recipePreview.default).join('');
       return markup;
     }
@@ -2218,7 +2217,7 @@ var BookmarksView = /*#__PURE__*/function (_View) {
 
     _defineProperty(_assertThisInitialized(_this), "_parentElement", document.querySelector('.bookmarks__list'));
 
-    _defineProperty(_assertThisInitialized(_this), "_errorMessage", 'No bookmarks to show');
+    _defineProperty(_assertThisInitialized(_this), "_message", 'No bookmarks available. Find a recipe and bookmark it.');
 
     return _this;
   }
@@ -2227,6 +2226,7 @@ var BookmarksView = /*#__PURE__*/function (_View) {
     key: "_generateMarkup",
     value: function _generateMarkup(_ref) {
       var bookmarks = _ref.bookmarks;
+      if (Array.isArray(bookmarks) && bookmarks.length === 0) throw new Error('No Bookmarks available');
       var markup = bookmarks.map(_recipePreview.default).join('');
       return markup;
     }
@@ -13874,10 +13874,8 @@ var controlBookmarks = function controlBookmarks(recipe) {
 var showBookmarksFromStorage = function showBookmarksFromStorage() {
   try {
     _bookmarksView.default.render(model.state);
-
-    console.log(model.state.bookmarks);
   } catch (err) {
-    console.log(err);
+    _bookmarksView.default.renderMessage();
   }
 };
 

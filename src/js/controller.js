@@ -84,9 +84,8 @@ const controlBookmarks = function (recipe) {
 const showBookmarksFromStorage = function () {
   try{
     BookmarksView.render(model.state);
-    console.log(model.state.bookmarks);
   }catch(err){
-    console.log(err);
+    BookmarksView.renderMessage();
   }
 };
 
