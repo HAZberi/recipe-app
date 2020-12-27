@@ -28,13 +28,12 @@ const showRecipe = async function () {
     //Update Search Results and Bookmark list to mark the selected recipe
     if (model.getSearchResultsPerPage().length > 0)
       ResultsView.update(model.getSearchResultsPerPage());
-    BookmarksView.update(model.state);
+    if (model.state.bookmarks.length > 0) BookmarksView.update(model.state);
     //STEP 1 Fetching the recipe
     await model.getRecipe(id);
     //Step2 Rendering the recipe
     RecipeView.render(model.state);
   } catch (err) {
-    console.error(err);
     RecipeView.renderError();
   }
 };
@@ -54,7 +53,6 @@ const showSearchResults = async function () {
     //Show pagination if any
     PaginationView.render(model.state.search);
   } catch (err) {
-    console.error(err);
     ResultsView.renderError();
   }
 };
@@ -101,11 +99,10 @@ const uploadNewRecipe = async function (newRecipe) {
     //Render the uploaded Recipe
     RecipeView.render(model.state);
     //push the new id in url
-    window.history.pushState(null,'',`#${model.state.recipe.id}`);
+    window.history.pushState(null, '', `#${model.state.recipe.id}`);
     //Re-render the Bookmarks List
     BookmarksView.render(model.state);
   } catch (err) {
-    console.error(err);
     closeModalWindow(AddRecipeView.renderError, err.message);
   }
 };
@@ -113,7 +110,6 @@ const uploadNewRecipe = async function (newRecipe) {
 const closeModalWindow = (callback, message) => {
   callback(message);
   setTimeout(() => {
-    console.log('in time out');
     AddRecipeView.closeModalAfterTimeOut();
   }, MODAL_WINDOW_TIMEOUT * 1000);
 };

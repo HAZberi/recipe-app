@@ -30,7 +30,6 @@ class AddRecipeView extends View {
       setTimeout(() => {
         const markup = this._generateMarkup();
         this._clearAndInsert(markup);
-        console.log('In set timeout All');
       }, MODAL_WINDOW_ANIMATION_TIMEOUT * 1000);
     }
   }

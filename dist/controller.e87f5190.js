@@ -893,7 +893,7 @@ exports.MODAL_WINDOW_ANIMATION_TIMEOUT = MODAL_WINDOW_ANIMATION_TIMEOUT;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sendJSON = exports.getJSON = void 0;
+exports.sendJSON = exports.AJAX = exports.getJSON = void 0;
 
 var _config = require("./config");
 
@@ -901,13 +901,26 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+/**
+ * A Promise that gets rejects after a specified time
+ * @param {number} s - Time in seconds
+ * @author Hassaan Zuberi <hassaan.zuberi@ucalgary.ca>
+ */
 var timeout = function timeout(s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
-      reject(new Error("Request took too long! Timeout after ".concat(s, " second")));
+      reject(new Error("Request took too long! Timeout after ".concat(s, " ").concat(s > 1 ? 'seconds' : 'second')));
     }, s * 1000);
   });
 };
+/**
+ * Gets the data from any API in JSON format
+ * @param {string} url - Complete API URL with endpoint
+ * @requires timeout(API_TIMEOUT) where API_TIMEOUT can be declared globally or imported from config module
+ * @returns {object} An object that ontains the data successfully fetched from the source API
+ * @author Hassaan Zuberi <hassaan.zuberi@ucalgary.ca>
+ */
+
 
 var getJSON = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(url) {
@@ -955,10 +968,19 @@ var getJSON = /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }();
+/**
+ * GET or POST the data to and fro any API in JSON format
+ * @param {string} url - Complete API URL with endpoint
+ * @param {object} dataObject - An object containing the data to be posted. If not specified, results a GET response.
+ * @requires timeout(API_TIMEOUT) where API_TIMEOUT can be declared globally or imported from config module
+ * @returns {object} An object that contains the data successfully posted or fetched
+ * @author Hassaan Zuberi <hassaan.zuberi@ucalgary.ca>
+ */
+
 
 exports.getJSON = getJSON;
 
-var sendJSON = /*#__PURE__*/function () {
+var AJAX = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(url, dataObject) {
     var res, data;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -967,13 +989,13 @@ var sendJSON = /*#__PURE__*/function () {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return Promise.race([fetch(url, {
-              method: "POST",
+            return Promise.race([dataObject ? fetch(url, {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify(dataObject)
-            }), timeout(_config.API_TIMEOUT)]);
+            }) : fetch(url), timeout(_config.API_TIMEOUT)]);
 
           case 3:
             res = _context2.sent;
@@ -1006,8 +1028,72 @@ var sendJSON = /*#__PURE__*/function () {
     }, _callee2, null, [[0, 12]]);
   }));
 
-  return function sendJSON(_x2, _x3) {
+  return function AJAX(_x2, _x3) {
     return _ref2.apply(this, arguments);
+  };
+}();
+/**
+ * POST the data to any API in JSON format
+ * @param {string} url - Complete API URL with endpoint
+ * @param {object} dataObject - An object containing the data to be posted
+ * @requires timeout(API_TIMEOUT) where API_TIMEOUT can be declared globally or imported from config module
+ * @returns {object} An object that contains the data successfully posted to the source API
+ * @author Hassaan Zuberi <hassaan.zuberi@ucalgary.ca>
+ */
+
+
+exports.AJAX = AJAX;
+
+var sendJSON = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(url, dataObject) {
+    var res, data;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            _context3.next = 3;
+            return Promise.race([fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(dataObject)
+            }), timeout(_config.API_TIMEOUT)]);
+
+          case 3:
+            res = _context3.sent;
+            _context3.next = 6;
+            return res.json();
+
+          case 6:
+            data = _context3.sent;
+
+            if (res.ok) {
+              _context3.next = 9;
+              break;
+            }
+
+            throw new Error("Error: ".concat(data.message, " (").concat(res.status, ")"));
+
+          case 9:
+            return _context3.abrupt("return", data);
+
+          case 12:
+            _context3.prev = 12;
+            _context3.t0 = _context3["catch"](0);
+            throw _context3.t0;
+
+          case 15:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[0, 12]]);
+  }));
+
+  return function sendJSON(_x4, _x5) {
+    return _ref3.apply(this, arguments);
   };
 }();
 
@@ -1048,8 +1134,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-// https://forkify-api.herokuapp.com/v2
-// APIKEY = 6d3db235-e538-465d-a436-f128c640bd9a
 var state = {
   recipe: {},
   search: {
@@ -1063,7 +1147,6 @@ var state = {
 exports.state = state;
 
 var recipeObject = function recipeObject(recipe) {
-  console.log(recipe);
   return _objectSpread({
     id: recipe.id,
     publisher: recipe.publisher,
@@ -1089,7 +1172,7 @@ var getRecipe = /*#__PURE__*/function () {
           case 0:
             _context.prev = 0;
             _context.next = 3;
-            return (0, _helper.getJSON)("".concat(_config.API_URL).concat(id, "?key=").concat(_config.API_KEY));
+            return (0, _helper.AJAX)("".concat(_config.API_URL).concat(id, "?key=").concat(_config.API_KEY));
 
           case 3:
             data = _context.sent;
@@ -1180,7 +1263,7 @@ var getSearchResults = /*#__PURE__*/function () {
             _context2.prev = 0;
             state.search.query = query;
             _context2.next = 4;
-            return (0, _helper.getJSON)("".concat(_config.API_URL, "?search=").concat(query, "&key=").concat(_config.API_KEY));
+            return (0, _helper.AJAX)("".concat(_config.API_URL, "?search=").concat(query, "&key=").concat(_config.API_KEY));
 
           case 4:
             data = _context2.sent;
@@ -1236,14 +1319,68 @@ var getSearchResultsPerPage = function getSearchResultsPerPage() {
 
 exports.getSearchResultsPerPage = getSearchResultsPerPage;
 
-var uploadRecipe = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(newRecipe) {
-    var ingredients, recipeToUpload, data, recipe;
+var uploadFormat = function uploadFormat(newRecipe, ingredients) {
+  if (!newRecipe) return;
+  return {
+    publisher: newRecipe.publisher,
+    source_url: newRecipe.sourceUrl,
+    image_url: newRecipe.imageUrl,
+    cooking_time: newRecipe.cookingTime,
+    title: newRecipe.title,
+    servings: newRecipe.servings,
+    ingredients: ingredients
+  };
+};
+
+var sendDataAndUpdateState = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(url, objectToUpload) {
+    var data, recipe;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.prev = 0;
+            _context3.next = 3;
+            return (0, _helper.AJAX)(url, objectToUpload);
+
+          case 3:
+            data = _context3.sent;
+            //Recieve uploaded data and parse it
+            recipe = data.data.recipe; //Update the state with the recently uploaded recipe
+
+            state.recipe = recipeObject(recipe); //add the recently uploaded recipe to bookmarks
+
+            addBookmark(state.recipe);
+            _context3.next = 12;
+            break;
+
+          case 9:
+            _context3.prev = 9;
+            _context3.t0 = _context3["catch"](0);
+            throw _context3.t0;
+
+          case 12:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[0, 9]]);
+  }));
+
+  return function sendDataAndUpdateState(_x3, _x4) {
+    return _ref3.apply(this, arguments);
+  };
+}();
+
+var uploadRecipe = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(newRecipe) {
+    var ingredients, recipeToUpload;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            //Filtering out ingredients with correct API format
             ingredients = Object.entries(newRecipe).filter(function (e) {
               return e[0].startsWith('ingredient') && e[1] !== '';
             }).map(function (e) {
@@ -1261,46 +1398,32 @@ var uploadRecipe = /*#__PURE__*/function () {
                 unit: unit,
                 description: description
               };
-            });
-            recipeToUpload = {
-              publisher: newRecipe.publisher,
-              source_url: newRecipe.sourceUrl,
-              image_url: newRecipe.imageUrl,
-              cooking_time: newRecipe.cookingTime,
-              title: newRecipe.title,
-              servings: newRecipe.servings,
-              ingredients: ingredients
-            }; //Send data to the API
+            }); //Preparing the recipe object for upload
 
-            _context3.next = 5;
-            return (0, _helper.sendJSON)("".concat(_config.API_URL, "?key=").concat(_config.API_KEY), recipeToUpload);
+            recipeToUpload = uploadFormat(newRecipe, ingredients); //Uploading the recipe
+
+            _context4.next = 5;
+            return sendDataAndUpdateState("".concat(_config.API_URL, "?key=").concat(_config.API_KEY), recipeToUpload);
 
           case 5:
-            data = _context3.sent;
-            //Recieve uploaded data and parse it
-            recipe = data.data.recipe; //Update the state with the recently uploaded recipe
-
-            state.recipe = recipeObject(recipe); //add the recently uploaded recipe to bookmarks
-
-            addBookmark(state.recipe);
-            _context3.next = 14;
+            _context4.next = 10;
             break;
 
-          case 11:
-            _context3.prev = 11;
-            _context3.t0 = _context3["catch"](0);
-            throw _context3.t0;
+          case 7:
+            _context4.prev = 7;
+            _context4.t0 = _context4["catch"](0);
+            throw _context4.t0;
 
-          case 14:
+          case 10:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
       }
-    }, _callee3, null, [[0, 11]]);
+    }, _callee4, null, [[0, 7]]);
   }));
 
-  return function uploadRecipe(_x3) {
-    return _ref3.apply(this, arguments);
+  return function uploadRecipe(_x5) {
+    return _ref4.apply(this, arguments);
   };
 }(); //A initialization function to get the data from local storage
 
@@ -2361,8 +2484,6 @@ var AddRecipeView = /*#__PURE__*/function (_View) {
           var markup = _this2._generateMarkup();
 
           _this2._clearAndInsert(markup);
-
-          console.log('In set timeout All');
         }, _config.MODAL_WINDOW_ANIMATION_TIMEOUT * 1000);
       }
     }
@@ -13810,9 +13931,7 @@ var showRecipe = /*#__PURE__*/function () {
 
 
             if (model.getSearchResultsPerPage().length > 0) _resultsView.default.update(model.getSearchResultsPerPage());
-
-            _bookmarksView.default.update(model.state); //STEP 1 Fetching the recipe
-
+            if (model.state.bookmarks.length > 0) _bookmarksView.default.update(model.state); //STEP 1 Fetching the recipe
 
             _context.next = 9;
             return model.getRecipe(id);
@@ -13821,17 +13940,16 @@ var showRecipe = /*#__PURE__*/function () {
             //Step2 Rendering the recipe
             _recipeView.default.render(model.state);
 
-            _context.next = 16;
+            _context.next = 15;
             break;
 
           case 12:
             _context.prev = 12;
             _context.t0 = _context["catch"](0);
-            console.error(_context.t0);
 
             _recipeView.default.renderError();
 
-          case 16:
+          case 15:
           case "end":
             return _context.stop();
         }
@@ -13877,17 +13995,16 @@ var showSearchResults = /*#__PURE__*/function () {
 
             _paginationView.default.render(model.state.search);
 
-            _context2.next = 15;
+            _context2.next = 14;
             break;
 
           case 11:
             _context2.prev = 11;
             _context2.t0 = _context2["catch"](0);
-            console.error(_context2.t0);
 
             _resultsView.default.renderError();
 
-          case 15:
+          case 14:
           case "end":
             return _context2.stop();
         }
@@ -13958,16 +14075,15 @@ var uploadNewRecipe = /*#__PURE__*/function () {
 
             _bookmarksView.default.render(model.state);
 
-            _context3.next = 14;
+            _context3.next = 13;
             break;
 
           case 10:
             _context3.prev = 10;
             _context3.t0 = _context3["catch"](0);
-            console.error(_context3.t0);
             closeModalWindow(_addRecipeView.default.renderError, _context3.t0.message);
 
-          case 14:
+          case 13:
           case "end":
             return _context3.stop();
         }
@@ -13983,8 +14099,6 @@ var uploadNewRecipe = /*#__PURE__*/function () {
 var closeModalWindow = function closeModalWindow(callback, message) {
   callback(message);
   setTimeout(function () {
-    console.log('in time out');
-
     _addRecipeView.default.closeModalAfterTimeOut();
   }, _config.MODAL_WINDOW_TIMEOUT * 1000);
 };

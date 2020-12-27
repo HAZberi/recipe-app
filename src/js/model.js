@@ -1,8 +1,6 @@
 import { async } from 'regenerator-runtime';
 import { API_KEY, API_URL, RESULTS_PER_PAGE } from './config';
-import { getJSON, sendJSON } from './helper.js';
-// https://forkify-api.herokuapp.com/v2
-// APIKEY = 6d3db235-e538-465d-a436-f128c640bd9a
+import { AJAX } from './helper.js';
 
 export const state = {
   recipe: {},
@@ -15,8 +13,7 @@ export const state = {
   bookmarks: [],
 };
 
-const recipeObject = function(recipe){
-  console.log(recipe);
+const recipeObject = function (recipe) {
   return {
     id: recipe.id,
     publisher: recipe.publisher,
@@ -28,16 +25,16 @@ const recipeObject = function(recipe){
     cookingTime: recipe.cooking_time,
     //Following key/value is specific to this project and doesnt come from API
     bookmarked: false,
-    ...(recipe.key && {key: recipe.key}),
-  }
-}
+    //conditionally adding a key-value pair - checking if a key-value pair exits in incoming data
+    ...(recipe.key && { key: recipe.key }),
+  };
+};
 
 export const getRecipe = async function (id) {
   try {
-    const data = await getJSON(`${API_URL}${id}?key=${API_KEY}`);
-
+    const data = await AJAX(`${API_URL}${id}?key=${API_KEY}`);
     const { recipe } = data.data;
-    state.recipe = recipeObject(recipe)
+    state.recipe = recipeObject(recipe);
     //if a recipe is already bookmarked
     if (state.bookmarks.some(recipe => recipe.id === id))
       state.recipe.bookmarked = true;
@@ -78,7 +75,6 @@ const clearBookmarks = function () {
   localStorage.clear('bookmarks');
 };
 
-
 export const getNewServings = function (newServings) {
   //Updating the change in quantity
   state.recipe.ingredients.forEach(ingredient => {
@@ -93,7 +89,7 @@ export const getNewServings = function (newServings) {
 export const getSearchResults = async function (query) {
   try {
     state.search.query = query;
-    const data = await getJSON(`${API_URL}?search=${query}&key=${API_KEY}`);
+    const data = await AJAX(`${API_URL}?search=${query}&key=${API_KEY}`);
     const { recipes } = data.data;
     state.search.results = recipes.map(recipe => {
       return {
@@ -101,7 +97,7 @@ export const getSearchResults = async function (query) {
         publisher: recipe.publisher,
         imageUrl: recipe.image_url,
         title: recipe.title,
-        ...(recipe.key && {key: recipe.key}),
+        ...(recipe.key && { key: recipe.key }),
       };
     });
     //always show the 1st page whenever user triggers a search
@@ -126,8 +122,37 @@ export const getSearchResultsPerPage = function (
   return state.search.results.slice(start, end);
 };
 
+const uploadFormat = function (newRecipe, ingredients) {
+  if (!newRecipe) return;
+  return {
+    publisher: newRecipe.publisher,
+    source_url: newRecipe.sourceUrl,
+    image_url: newRecipe.imageUrl,
+    cooking_time: newRecipe.cookingTime,
+    title: newRecipe.title,
+    servings: newRecipe.servings,
+    ingredients,
+  };
+};
+
+const sendDataAndUpdateState = async function (url, objectToUpload) {
+  try {
+    //Send data to the API
+    const data = await AJAX(url, objectToUpload);
+    //Recieve uploaded data and parse it
+    const { recipe } = data.data;
+    //Update the state with the recently uploaded recipe
+    state.recipe = recipeObject(recipe);
+    //add the recently uploaded recipe to bookmarks
+    addBookmark(state.recipe);
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const uploadRecipe = async function (newRecipe) {
   try {
+    //Filtering out ingredients with correct API format
     const ingredients = Object.entries(newRecipe)
       .filter(e => e[0].startsWith('ingredient') && e[1] !== '')
       .map(e => e[1].split(','))
@@ -136,28 +161,13 @@ export const uploadRecipe = async function (newRecipe) {
           throw new Error(
             'Wrong Format!! Ingredients must be entered as following: "Quantity, Unit, Description" \n Specifying Description is also required. '
           );
-
         const [quantity, unit, description] = ing;
         return { quantity: quantity ? +quantity : null, unit, description };
       });
-    
-    const recipeToUpload = {
-      publisher: newRecipe.publisher,
-      source_url: newRecipe.sourceUrl,
-      image_url: newRecipe.imageUrl,
-      cooking_time: newRecipe.cookingTime,
-      title: newRecipe.title,
-      servings: newRecipe.servings,
-      ingredients
-    }
-    //Send data to the API
-    const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipeToUpload);
-    //Recieve uploaded data and parse it
-    const { recipe } = data.data;
-    //Update the state with the recently uploaded recipe
-    state.recipe = recipeObject(recipe);
-    //add the recently uploaded recipe to bookmarks
-    addBookmark(state.recipe);
+    //Preparing the recipe object for upload
+    const recipeToUpload = uploadFormat(newRecipe, ingredients);
+    //Uploading the recipe
+    await sendDataAndUpdateState(`${API_URL}?key=${API_KEY}`, recipeToUpload);
   } catch (err) {
     throw err;
   }
