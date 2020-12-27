@@ -1,3 +1,14 @@
+/**
+ * The time ago function takes a date string in the past.
+ * The time ago function will not work with dates in the future.
+ * The date string should follow ISO 8601 syntax (JavaScript ISO Date)
+ * For more information on the date format https://www.w3schools.com/js/js_date_formats.asp
+ * @param {string} date - A date string in ISO 8601 format
+ * @returns {string} Returns a string with time passed in a user-friendly way
+ * @requires Date - Requires access to browser or JavaScript Date API
+ * @author Hassaan Zuberi <mhazuberi@gmail.com>
+ */
+
 const timeAgo = function (date) {
   const timeStamp = new Date(date);
   const timeElapsed = new Date() - timeStamp;
@@ -40,9 +51,3 @@ const timeAgo = function (date) {
 };
 
 export default timeAgo;
-
-//Notes:
-//The time ago function takes a date string in the past.
-//The time ago function will not work with dates in the future.
-//The date string should follow ISO 8601 syntax (JavaScript ISO Date)
-//For more information on the date format https://www.w3schools.com/js/js_date_formats.asp
